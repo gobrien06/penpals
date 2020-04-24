@@ -8,7 +8,6 @@ router.post('/users', function(req, res) {
 });
 
 router.post('/users/delete', function(req, res) {
-    console.log('adfs');
     users.delete_user(req, res);
 });
 
