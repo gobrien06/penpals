@@ -4,9 +4,11 @@ const users = require('../models/users');
 
 
 router.post('/users', function(req, res) {
-    console.log('afdsdafs');
     users.insert(req, res);
 });
 
+router.post('users/delete', function(req, res) {
+    users.delete(req, res);
+});
 
 module.exports = router;
