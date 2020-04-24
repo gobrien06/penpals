@@ -13,7 +13,7 @@ test('Signup', done => {
         .post('/users')
         .send(formData)
         .then(res => {
-            console.log(res.body);
+            console.log(res.statusCode);
             done();
         });
         
@@ -31,7 +31,7 @@ test('Delete', done => {
         .post('/users/delete')
         .send(formData)
         .then(res => {
-            console.log(res.body);
+            console.log(res.statusCode);
             done();
         });
     

@@ -14,9 +14,7 @@ function insert(req, res) {
                 token: 'SUCCESS'
             });
         }, result => {
-            res.json({
-                success: false
-            });
+            res.sendStatus(401);
         });
     }, result => {
         console.log(result);
