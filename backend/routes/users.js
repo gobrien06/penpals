@@ -8,7 +8,7 @@ router.post('/users', function(req, res) {
 });
 
 router.post('users/delete', function(req, res) {
-    users.delete(req, res);
+    users.delete_user(req, res);
 });
 
 module.exports = router;

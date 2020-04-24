@@ -25,7 +25,7 @@ function insert(req, res) {
 
 const query_delete = 'DELETE FROM users WHERE username = $1';
 
-function delete(req, res) {
+function delete_user(req, res) {
     pg_client.query(query_authenticate, [req.body.username]).then(result => {
         bcrypt.compare(req.body.password, result[0]['password'], (err, result) => {
             if(result == true) {
@@ -43,4 +43,4 @@ function delete(req, res) {
     });
 }
 
-module.exports = {insert, delete};
+module.exports = {insert, delete_user};
