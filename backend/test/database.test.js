@@ -12,10 +12,10 @@ const formData = {
         
 describe('Test User', () => {
     test('Create User', done => {
-        
         request(app)
             .post('/users')
             .send(formData)
+            .expect(200)
             .then(res => {
                 console.log(res.statusCode);
                 done();
@@ -30,6 +30,7 @@ describe('Delete User', () => {
         request(app)
             .post('/users/delete')
             .send(formData)
+            .expect(200)
             .then(res => {
                 console.log(res.statusCode);
                 done();
