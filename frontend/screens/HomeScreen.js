@@ -27,108 +27,103 @@ export default function HomeScreen(props) {
   }
 
 
-  if(!props.TOKEN){
-  return (
-    <View style={styles.container}>
-        <View style={styles.welcomeContainer}>
-         
-          
-        </View>
-        <View style={styles.getStartedContainer}>
-       
-        <Image source={
-          require('../assets/images/iu.png')
-      
-        }
-        style={{
-          marginTop:60,
-          height:120,
-          width:210,
-        }
-    
-          }/>
-          
-           <Text
-          style={{
-            fontFamily:`manrope`,
-            fontSize:60,
-            color:'#000',
-            fontWeight:`bold`,
-      
-          }}>
-            PenPals
-          </Text>
-        </View>
-
-        <View style={styles.buttonContainer}>
-        <LinearGradient
-            colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
-            start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
-            style={{ height: 65, width: 290,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
-            >
-        <TouchableHighlight style={styles.touchStyle} onPress={()=>login()}>
-        
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableHighlight>
-        </LinearGradient>
-        <TouchableHighlight onPress={()=>signUp()}>
-          <Text style={styles.freeText}>Or, click here to sign up.</Text>
-        </TouchableHighlight>
-        </View>
-
-    
-    </View>
-  )
-  }
   return(
-      <View style={styles.container}>
-          <View style={styles.welcomeContainer}>
-         
-          
-         </View>
-         <View style={styles.getStartedContainer}>
-       
-         <Image source={
-           require('../assets/images/iu.png')
-       
-         }
-         style={{
-           height:170,
-           width:170,
-         }
+    <View style={styles.container}>
+
+    { (!props.TOKEN) ? (
+      <View>
+      <View style={styles.getStartedContainer}>
      
-           }/>
-           
-            <Text
-           style={{
-             fontFamily:`manrope-bold`,
-             fontSize:60,
-             color:'#FAE99E',
-           }}>
-             hobbyist
-           </Text>
-         </View>
-
-      <View style={styles.buttonContainer}>
-      <TouchableHighlight style={styles.touchStyle} onPress={()=>search()}>
-
-          <Text style={styles.buttonText}>Search</Text>
-        </TouchableHighlight>
-      <TouchableHighlight style={styles.touchStyle} onPress={()=>goToEdit()} >
-              <Text style={styles.buttonText}>Edit</Text>
-      </TouchableHighlight>
-      <TouchableHighlight style={styles.touchStyle} onPress={()=>toChat()}>
-        <Text style={styles.buttonText}>Chat</Text>
-      </TouchableHighlight>
-      <TouchableHighlight style={styles.lilLog} onPress={()=>logout()}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableHighlight>
-      
+      <Image source={
+        require('../assets/images/iu.png')
+    
+      }
+      style={{
+        marginTop:60,
+        height:120,
+        width:210,
+      }
+  
+        }/>
+        
+         <Text
+        style={{
+          fontFamily:`manrope`,
+          fontSize:60,
+          color:'#000',
+          fontWeight:`bold`,
+    
+        }}>
+          PenPals
+        </Text>
       </View>
+    
+      <View style={styles.buttonContainer}>
+      <LinearGradient
+          colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
+          start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+          style={{ height: 65, width: 290,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
+          >
+      <TouchableHighlight style={styles.touchStyle} onPress={()=>login()}>
+      
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableHighlight>
+      </LinearGradient>
+      <TouchableHighlight onPress={()=>signUp()}>
+        <Text style={styles.freeText}>Or, click here to sign up.</Text>
+      </TouchableHighlight>
+      </View>
+    </View> )
+    : (<View style={styles.container}>
+    <View style={styles.welcomeContainer}>
+   
+    
+   </View>
+   <View style={styles.getStartedContainer}>
+ 
+   <Image source={
+     require('../assets/images/iu.png')
+ 
+   }
+   style={{
+     height:170,
+     width:170,
+   }
 
+     }/>
+     
+      <Text
+     style={{
+       fontFamily:`manrope-bold`,
+       fontSize:60,
+       color:'#FAE99E',
+     }}>
+       hobbyist
+     </Text>
+   </View>
+
+<View style={styles.buttonContainer}>
+<TouchableHighlight style={styles.touchStyle} onPress={()=>search()}>
+
+    <Text style={styles.buttonText}>Search</Text>
+  </TouchableHighlight>
+<TouchableHighlight style={styles.touchStyle} onPress={()=>goToEdit()} >
+        <Text style={styles.buttonText}>Edit</Text>
+</TouchableHighlight>
+<TouchableHighlight style={styles.touchStyle} onPress={()=>toChat()}>
+  <Text style={styles.buttonText}>Chat</Text>
+</TouchableHighlight>
+<TouchableHighlight style={styles.lilLog} onPress={()=>logout()}>
+  <Text style={styles.buttonText}>Logout</Text>
+</TouchableHighlight>
+
+</View>
+
+</View>
+    )
+    }
   </View>
-  )
-
+  );
 }
 
 

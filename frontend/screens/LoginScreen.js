@@ -109,12 +109,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
     },
     midText:{
-        marginLeft:20,
-        fontSize:60,
-        fontFamily:'manrope-semi-bold',
-        marginTop:50,
-        textAlign:`left`,
-        color:`#000`,
+      marginLeft:20,
+      fontSize:60,
+      fontFamily:'manrope-semi-bold',
+      marginTop:50,
+      textAlign:`left`,
+      color:`#000`,
     },
     touchStyle:{    
       borderRadius:50,

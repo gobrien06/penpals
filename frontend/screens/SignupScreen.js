@@ -17,7 +17,7 @@ export default function SignupScreen(props) {
  
 
     const submitInfo =  async() => {
-      const user={
+      /*const user={
         username:usernm,
         password:password,
         phone:phone,
@@ -36,15 +36,13 @@ export default function SignupScreen(props) {
       .catch(()=>{
         setError("Network error. Try again.")
       })
-      console.log("sent");
-      props.navigation.navigate('Hobbies');
+      console.log("sent");*/
+      props.navigation.navigate('Language');
     }
 
     return (
         <View style={styles.container}>
           <KeyboardAwareScrollView style={{flexGrow:1,}} enableAutomaticScroll="true" extraScrollHeight={200} enableOnAndroid={true}  >
-
-         
             <Text style={styles.midText}>
             Let's start.
             </Text>

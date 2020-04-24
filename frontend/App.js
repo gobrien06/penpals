@@ -9,7 +9,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
-import SignUpScreen from './screens/SignupScreen';
+import SignupScreen from './screens/SignupScreen';
+import LanguageScreen from './screens/LanguageScreen';
 
 
 import useLinking from './navigation/useLinking';
@@ -77,8 +78,9 @@ export default function App(props) {
             <Stack.Screen name="Login">
             {props => <LoginScreen {...props} setUser={setUser}/>}
             </Stack.Screen>
-            <Stack.Screen name="Signup">
-            {props => <SignUpScreen {...props} setUser={setUser}/>}
+            <Stack.Screen name="Signup" component={SignupScreen}/>
+            <Stack.Screen name="Language">
+            {props => <LanguageScreen {...props} setUser={setUser}/>}
             </Stack.Screen>
           
           </Stack.Navigator>
