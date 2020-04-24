@@ -90,8 +90,6 @@ export default function App(props) {
             <Stack.Screen name="Channel">
             {props => <ChannelScreen {...props} setUser={setUser}/>}
             </Stack.Screen>
-          
-          
           </Stack.Navigator>
         </NavigationContainer>
       </View>

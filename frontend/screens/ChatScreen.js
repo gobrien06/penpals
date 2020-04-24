@@ -8,6 +8,8 @@ export default function ChatScreen(props){
     const [unJoined, setUnJoined] = React.useState([{members:'unoiined',channelId:'4325436',}]);
     const [joined, setJoined] = React.useState([{members:'testing',channelId:'4325436',},{members:'testing2',channelId:'4325436',},{members:'testin2',channelId:'4325436',},{members:'testing2',channelId:'4325436',}]);
 
+    //notify users of new chat channels
+    
     const getChannels=()=>{
         /*
         const config = {
@@ -82,7 +84,8 @@ export default function ChatScreen(props){
     }
 
     const reply=(i)=>{
-        props.navigation.navigate('Channel', {channelId:joined[i].channelId});
+        props.navigation.navigate('Channel');
+       //props.navigation.navigate('Channel', {channelId:joined[i].channelId});
     }
 
     const joinChannel = (i) =>{
@@ -234,7 +237,7 @@ const styles = StyleSheet.create({
     removeButton:{
         justifyContent:`center`,
         height:55,
-        width:60,
+        width:50,
         borderRadius:10,
         alignSelf:`flex-end`,
         position:`absolute`,
@@ -242,7 +245,7 @@ const styles = StyleSheet.create({
     },
     closeText:{
         textAlign:`center`,
-        fontSize:45,
+        fontSize:40,
         color:`#000`,
         fontFamily:`manrope`,
     },

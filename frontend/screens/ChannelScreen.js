@@ -1,14 +1,33 @@
 import * as React from 'react';
 //import  { Bubble, GiftedChat, InputToolbar, Send, Message} from 'react-native-gifted-chat';
-import {StyleSheet, FlatList, View, Text, TouchableHighlight, TextInput} from 'react-native';
+import {StyleSheet, ScrollView, View, Text, TouchableHighlight, TextInput} from 'react-native';
 import axios from 'axios';
 import HomeButton from '../components/HomeButton';
-import LinearGradient from 'expo-linear-gradient';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {LinearGradient} from 'expo-linear-gradient';
 
 export default function ChannelScreen(props){
-    const [messages,setMessages] = React.useState([{content:'gdfgfdsgdg',user:'gdfgfdg'}]);
+    const [messages,setMessages] = React.useState(['hey!']);
+    const [formValue,setFormValue] = React.useState('');
     const [user, setUser] = React.useState('placeholder');
+    const [newMessages,setNewMessages] = React.useState([]);
 
+    const textInput = React.createRef();
+
+    const submitInfo = () => {
+        setNewMessages(newMessages => {
+          if(formValue=='')
+            return newMessages;
+    
+            newMessages.push(formValue);
+            return newMessages;
+        });
+            //console.log("submitted");
+            setFormValue('');
+            textInput.current.clear();
+      }
+
+    
     const getMessages=()=>{/*
         const config = {
             headers: {
@@ -37,7 +56,27 @@ export default function ChannelScreen(props){
     */
     }
 
-
+    const displayMessages = () =>{
+        return (newMessages.map((items)=>{
+            if(user === props.user){
+                return (
+                <View style={styles.bubbleTo}>
+                <Text style={styles.bubbleTxt}>{items}</Text>
+                <Text style={styles.bubbleDate}>somedatehere</Text>
+                </View>
+                )
+            }
+            else{
+                return(
+                <View style={styles.bubbleTo}>
+                <Text style={styles.bubbleTxt}>{items}</Text>
+                <Text style={styles.bubbleDate}>somedatehere</Text>
+                </View>
+                ) 
+            }   
+        }))
+    }
+    
     const sendMessage=(content)=>{ /*
         const config = {
             headers: {
@@ -75,10 +114,11 @@ export default function ChannelScreen(props){
         fontFamily:'manrope',}}/>
     }
     */
-    React.useEffect(getMessages,[]);
 
     return(
         <View style={styles.container}>
+        <KeyboardAwareScrollView style={{}}   scrollEnabled={false} extraScrollHeight={130} enableOnAndroid={true} enableResetScrollToCoords={true}>
+
             <View style={styles.topbar}>
                 <Text style={styles.toptxt}>
                     {user}
@@ -86,26 +126,37 @@ export default function ChannelScreen(props){
                 <HomeButton navigation={props.navigation} align='right'/>
             </View>
             <View style={styles.chatcontain}>
-                <FlatList />
+                <ScrollView contentContainerStyle={styles.scroll}>
+                    {displayMessages()}
+                </ScrollView>
             </View>
             <View style={styles.footer}>
-                <TextInput />
-                <LinearGradient
-                   colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
-                   start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
-                   style={{ height: 65, width: 205,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
-                >
-                <TouchableHighlight>
+                <TextInput
+                secureTextEntry={false}
+                placeholderTextColor = "#151616"
+                placeholder="Type Another"
+                onChangeText={(text) => setFormValue(text)}
+                onSubmitEditing={submitInfo}
+                autoCapitalize="words"
+                autoCorrect={true}
+                ref={textInput}
+                style={styles.textInput}/>
+      
+                <TouchableHighlight style={styles.submitBtn} onPress={submitInfo}>
                     <Text style={styles.btnTxt}>
                         Send
                     </Text>
                 </TouchableHighlight>
-                </LinearGradient>
             </View>
+            </KeyboardAwareScrollView>
             </View> 
     ) 
 }
 
+/*
+multiline = {true}
+                numberOfLines = {3}
+                */
 /*
   <>
 
@@ -132,6 +183,10 @@ export default function ChannelScreen(props){
 
 
 const styles = StyleSheet.create({
+    chatcontain:{
+        height:500,
+    
+    },
     container:{
         flex:1,
         backgroundColor: '#FFF',
@@ -155,33 +210,63 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start', 
     },
     footer:{
-        position: 'absolute',
         flexDirection: 'row',
-        height:50,
+        height:100,
         flexWrap: 'wrap', 
         alignItems: 'flex-end',
-        padding:20,
-        paddingTop:0,  
+        padding:15,
+        paddingTop:0,
         bottom:0,
     },
     bubbleFrom:{
-        height:200,
-        width:200,
+        elevation:5,
+        maxWidth:220,
+        margin:10,
+        marginLeft:20,
+        padding:10,
         backgroundColor:`#FDB372`,
+        borderRadius:15,
+    },
+    bubbleTo:{
+        elevation:5,
+        maxWidth:220,
+        margin:10,
+        marginLeft:20,
+        padding:10,
+        alignSelf: 'flex-end',
+        borderRadius:15,
+        backgroundColor:`#FF7563`,
     },
     bubbleTxt:{
         color:`#FFF`,
-        fontSize:25,
+        fontSize:20,
         fontFamily:`manrope`,
     },
+    bubbleDate:{
+        color:`#FFF`,
+        bottom:0,
+        fontSize:20,
+        fontFamily:`manrope-light`,
+    },
     submitBtn:{
+        marginBottom:30, marginLeft:30,
         elevation:5,
-        borderRadius:50,
-        width:70,
+        borderRadius:15,
+        width:85,
+        height:50,
+        justifyContent:`center`,
+        backgroundColor:`#FFF`,
     },
     btnTxt:{
-        color:`#FF2200`,
+        textAlign:`center`,
+        color:`#000`,
         fontSize:25,
         fontFamily:`manrope-light`,
+    },
+    textInput:{
+        height:100,
+        width:230,
+        margin:10,
+        fontSize:20,
     },
 });
