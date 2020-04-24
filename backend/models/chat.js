@@ -1,13 +1,13 @@
 var pg_client = require('../database/database');
 
-const q_createChannel = 'INSERT INTO channels (members) VALUES ($1) RETURNING channelid';
+const q_createChannel = 'INSERT INTO channels (members, pending_members) VALUES ($1, $2) RETURNING channelid';
 const q_addPendingUserChannels = 'UPDATE users SET pending_channels = array_append(pending_channels, $1) WHERE username = $2';
 
 function createChannel(members) {
-    pg_client.query(query_createChannel, [[]]).then(result => {
+    pg_client.query(query_createChannel, [[], members]).then(result => {
         for(let i = 0; i < members.length; ++i) {
             let user = members[i];
-            pg_client(q_addPendingUserChannels, [result['rows'][0]['channeldid']].then(result => {
+            pg_client(q_addPendingUserChannels, [result['rows'][0]['channeldid']]).then(result => {
                 console.log(result);
             }, result => {
                 console.log(result);
@@ -81,14 +81,23 @@ function joinChannel(req, res) {
     });
 }
 
-const q_removeChannelMembers = 'DELETE FROM channels WHERE channelid = $1 RETURNING *'
-
+const q_removeChannel = 'DELETE FROM channels WHERE channelid = $1 RETURNING *'
+const q_removeChannelMembers = 'UPDATE users SET channels = array_remove(channels, $1), pending_channels = array_remove(channels, $1) WHERE username = $2'
 
 function leaveChannel(req, res) {
-    
-    pg_client.query(q_removeChannelMembers, req.body.channelId).then(result => {
-        //remove channel from both users
+    //remove channel
+    pg_client.query(q_removeChannel, req.body.channelId).then(result => {
         
+        //remove channel from both users
+        let members = [...result['rows'][0]['members'], ...result['rows'][0]['pending_members'];
+        for(let i = 0; i < members.length; i++) {
+            pg_client.query(q_removeChannelMembers, [req.body.channelId, result['rows'][0]['members'][i]]]).then(result => {
+                res.sendStatus(200);
+            }, result => {
+                console.log(result);
+                res.sendStatus(400);
+            });
+        }
     }, result => {
         res.sendStatus(400);
         console.log(result);

@@ -10,7 +10,7 @@ function insert(req, res) {
     bcrypt.hash(req.body.password, 12).then((hash) => {
         pg_client.query(q_insert, [req.body.username, hash, req.body.first_name, req.body.last_name, req.body.languages]).then(result => {
             res.status(200);
-            res.send();
+            auth.authenticate(req, res);
         }, result => {
             res.sendStatus(401);
         });

@@ -30,6 +30,7 @@ function authenticate(req, res) {
         bcrypt.compare(req.body.password, result['rows'][0]['pass'], (err, result) => {
             if(result == true) {
                 let accessToken = jwt.sign({user: req.body.username}, accessTokenSecret);
+                res.status(200);
                 res.json({
                     token: accessToken
                 });
