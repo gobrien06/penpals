@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../app');
+const pg_client = require('../database/database');
 
 
 const formData = {
@@ -9,6 +10,10 @@ const formData = {
             password: 'LOLE',
             languages: ['en']        
         }
+
+afterAll(() => {
+  pg_client.end();
+});
         
 let auth;
 
@@ -18,7 +23,7 @@ describe('est', () => {
             .post('/users')
             .send(formData)
             .expect(200)
-            .then(res => {
+            .end((err, res) => {
                 auth = res.body['token'];
                 done();
             });
@@ -28,7 +33,7 @@ describe('est', () => {
     test('Create Channel', done => {
         request(app)
             .get('/chat/test')
-            .then(res => {
+            .end((err, res) => {
                 done();
             });
     }); 
@@ -39,8 +44,7 @@ describe('est', () => {
         request(app)
             .get('/chat/channels')
             .set('Authorization', 'BEARER ' + auth)
-            .then(res => {
-                console.log(res.body);
+            .end((err, res) => {
                 channelId = res.body['pending_channels'][0]['channelId'];
                 done();
             });
@@ -52,7 +56,7 @@ describe('est', () => {
             .set('Authorization', 'BEARER ' + auth)
             .send({channelId: channelId})
             .expect(201)
-            .then(res => {
+            .end((err, res) => {
                 done();
             });
     });
@@ -66,7 +70,7 @@ describe('est', () => {
                 channelId: channelId,
                 content: {message: 'LOLEE'}
             })
-            .then(res => {
+            .end((err, res) => {
                 done();
             });
     });
@@ -75,8 +79,12 @@ describe('est', () => {
         request(app)
             .post('/chat/channels/messages')
             .set('Authorization', 'BEARER ' + auth)
-            .then(res => {
+            .send({
+                channelId: channelId
+            })
+            .end((err, res) => {
                 console.log(res.body);
+                done();
             });
         
     });
@@ -86,8 +94,8 @@ describe('est', () => {
             .post('/chat/channels/leave')
             .set('Authorization', 'BEARER ' + auth)
             .send({channelId: channelId})
-            .then(res => {
-                console.log(res.body);
+            .end((err, res) => {
+                done();
             });
     });
     
@@ -96,9 +104,10 @@ describe('est', () => {
             .post('/users/delete')
             .send(formData)
             .expect(200)
-            .then(res => {
+            .end((err, res) => {
                 done();
             });
         
     });
+    
 });

@@ -26,7 +26,7 @@ router.post('/chat/channels/send', auth.authenticateJWT, function(req, res) {
 });
 
 router.get('/chat/test', function(req, res) {
-   chat.createChannel(['test']);    
+   chat.createChannel(['test', 'test2'], res);    
 });
 
 
