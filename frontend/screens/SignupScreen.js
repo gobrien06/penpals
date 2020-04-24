@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Image, TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Text } from 'react-native';
+import { Image, TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Text, ActivityIndicator } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import HomeButton from '../components/HomeButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -42,9 +42,9 @@ export default function SignupScreen(props) {
 
     return (
         <View style={styles.container}>
-          <KeyboardAwareScrollView style={{flexGrow:1,}} enableAutomaticScroll="true" extraScrollHeight={200} enableOnAndroid={true}  >
+          <KeyboardAwareScrollView style={{flexGrow:1,}} enableAutomaticScroll={true} extraScrollHeight={200} enableOnAndroid={true}  >
             <Text style={styles.midText}>
-            Let's start.
+            Register.
             </Text>
             <LinearGradient
             colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
@@ -90,7 +90,7 @@ export default function SignupScreen(props) {
             <LinearGradient
             colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
             start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
-            style={{ height: 70, width: 230,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
+            style={{ height: 65, width: 225,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
             >
             <TouchableHighlight style={styles.touchStyle} onPress={()=>submitInfo()} >
               <Text style={styles.buttonText}>Sign Up</Text>
@@ -101,7 +101,7 @@ export default function SignupScreen(props) {
             {error}
             </Text>
             </View>
-                 </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView>
         </View>
       );
 }
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         marginRight:20,
         fontSize:60,
         fontFamily:'manrope-semi-bold',
-        marginTop:50,   
+        marginTop:40,   
         textAlign:`right`,
         color:`#000`,
     },
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         fontSize:25,
         width:300,
         height:70,
-        borderRadius:5,
+        borderRadius:15,
       },
       textInputName:{
         backgroundColor:`#F4F4F4`,
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
         fontSize:25,
         width:140,
         height:70,
-        borderRadius:5,
+        borderRadius:15,
       },
       buttonContainer:{
         alignItems: 'center',

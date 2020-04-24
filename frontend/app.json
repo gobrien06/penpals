@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "HelloWorld",
+    "name": "PenPals",
     "slug": "frontend",
     "platforms": [
       "ios",
@@ -9,10 +9,10 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/iu.png",
     "scheme": "myapp",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/iu.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

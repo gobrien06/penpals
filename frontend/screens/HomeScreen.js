@@ -3,9 +3,6 @@ import { Image, Platform, StyleSheet, View, Dimensions, TouchableHighlight, Text
 import {LinearGradient} from 'expo-linear-gradient';
 
 export default function HomeScreen(props) {
-  const search = () =>{
-    props.navigation.navigate('SearchSetup', {setTOKEN:props.setTOKEN});
-  }
   const signUp = () =>{
     props.navigation.navigate('Signup', {setTOKEN:props.setTOKEN});
   }
@@ -19,7 +16,7 @@ export default function HomeScreen(props) {
   }
 
   const goToEdit=()=>{
-    props.navigation.navigate('Hobbies',{TOKEN:props.TOKEN});
+    props.navigation.navigate('Language',{TOKEN:props.TOKEN});
   }
 
   const toChat=()=>{
@@ -29,40 +26,39 @@ export default function HomeScreen(props) {
 
   return(
     <View style={styles.container}>
+      <View style={styles.getStartedContainer}>
+     
+     <Image source={
+       require('../assets/images/iu.png')
+   
+     }
+     style={{
+       marginTop:60,
+       height:120,
+       width:210,
+     }
+ 
+       }/>
+       
+        <Text
+       style={{
+         fontFamily:`manrope`,
+         fontSize:60,
+         color:'#000',
+         fontWeight:`bold`,
+   
+       }}>
+         PenPals
+       </Text>
+     </View>
 
     { (!props.TOKEN) ? (
       <View>
-      <View style={styles.getStartedContainer}>
-     
-      <Image source={
-        require('../assets/images/iu.png')
-    
-      }
-      style={{
-        marginTop:60,
-        height:120,
-        width:210,
-      }
-  
-        }/>
-        
-         <Text
-        style={{
-          fontFamily:`manrope`,
-          fontSize:60,
-          color:'#000',
-          fontWeight:`bold`,
-    
-        }}>
-          PenPals
-        </Text>
-      </View>
-    
       <View style={styles.buttonContainer}>
       <LinearGradient
           colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
           start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
-          style={{ height: 65, width: 290,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
+          style={{ height: 60, width: 285,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
           >
       <TouchableHighlight style={styles.touchStyle} onPress={()=>login()}>
       
@@ -79,42 +75,29 @@ export default function HomeScreen(props) {
    
     
    </View>
-   <View style={styles.getStartedContainer}>
- 
-   <Image source={
-     require('../assets/images/iu.png')
- 
-   }
-   style={{
-     height:170,
-     width:170,
-   }
-
-     }/>
-     
-      <Text
-     style={{
-       fontFamily:`manrope-bold`,
-       fontSize:60,
-       color:'#FAE99E',
-     }}>
-       hobbyist
-     </Text>
-   </View>
+  
 
 <View style={styles.buttonContainer}>
-<TouchableHighlight style={styles.touchStyle} onPress={()=>search()}>
-
-    <Text style={styles.buttonText}>Search</Text>
-  </TouchableHighlight>
-<TouchableHighlight style={styles.touchStyle} onPress={()=>goToEdit()} >
-        <Text style={styles.buttonText}>Edit</Text>
-</TouchableHighlight>
+<LinearGradient
+  colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
+  start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+  style={{ height: 60, width: 285,  borderRadius:50, alignItems: 'center', justifyContent: 'center',marginTop:-30,}}
+  >
 <TouchableHighlight style={styles.touchStyle} onPress={()=>toChat()}>
   <Text style={styles.buttonText}>Chat</Text>
 </TouchableHighlight>
+</LinearGradient>
+<LinearGradient
+  colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
+  start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+  style={{ height: 60, width: 285,  borderRadius:50, alignItems: 'center', justifyContent: 'center', marginTop:20,}}
+  >
+<TouchableHighlight style={styles.touchStyle} onPress={()=>goToEdit()} >
+        <Text style={styles.buttonText}>Settings</Text>
+</TouchableHighlight>
+</LinearGradient>
 <TouchableHighlight style={styles.lilLog} onPress={()=>logout()}>
-  <Text style={styles.buttonText}>Logout</Text>
+  <Text style={styles.logbuttonText}>Logout</Text>
 </TouchableHighlight>
 
 </View>
@@ -159,19 +142,25 @@ const styles = StyleSheet.create({
     height:55,
   },
   lilLog:{
-    marginTop:10,
+    elevation:8,
+    marginTop:30,
     marginBottom:30,
     borderRadius:50,
     alignItems:`center`,
-    backgroundColor:`#FAE99E`,
+    backgroundColor:`#FFF`,
     justifyContent:`center`,
+    borderColor:`#000`,
     padding:5,
-    width:200,
+    width:150,
     height:50,
+  },
+  logbuttonText:{
+    fontSize:25,
+    fontFamily:`manrope`,
+    color:`#000`,
   },
   buttonText:{
     fontSize:25,
-
     fontFamily:`manrope`,
     color:`#FF3D00`,
   },

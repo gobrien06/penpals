@@ -11,6 +11,8 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import LanguageScreen from './screens/LanguageScreen';
+import ChatScreen from './screens/ChatScreen';
+import ChannelScreen from './screens/ChannelScreen';
 
 
 import useLinking from './navigation/useLinking';
@@ -82,6 +84,13 @@ export default function App(props) {
             <Stack.Screen name="Language">
             {props => <LanguageScreen {...props} setUser={setUser}/>}
             </Stack.Screen>
+            <Stack.Screen name="Chat">
+            {props => <ChatScreen {...props} setUser={setUser}/>}
+            </Stack.Screen>
+            <Stack.Screen name="Channel">
+            {props => <ChannelScreen {...props} setUser={setUser}/>}
+            </Stack.Screen>
+          
           
           </Stack.Navigator>
         </NavigationContainer>

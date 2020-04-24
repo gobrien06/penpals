@@ -1,13 +1,15 @@
 import * as React from 'react';
-import {View,ScrollView,Text,StyleSheet, TouchableHighlight, Dimensions, Image} from 'react-native';
+import {View,ScrollView,Text,StyleSheet, TouchableHighlight, Dimensions} from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
 import axios from 'axios';
-import HomeButton from '../../../Hobbyist/components/HomeButton';
+import HomeButton from '../components/HomeButton';
 
 export default function ChatScreen(props){
-    const [unJoined, setUnJoined] = React.useState([]);
-    const [joined, setJoined] = React.useState([]);
+    const [unJoined, setUnJoined] = React.useState([{members:'unoiined',channelId:'4325436',}]);
+    const [joined, setJoined] = React.useState([{members:'testing',channelId:'4325436',},{members:'testing2',channelId:'4325436',},{members:'testin2',channelId:'4325436',},{members:'testing2',channelId:'4325436',}]);
 
     const getChannels=()=>{
+        /*
         const config = {
             headers: {
               'Authorization': 'BEARER ' + props.route.params.TOKEN,
@@ -26,7 +28,7 @@ export default function ChatScreen(props){
             console.log(error);
         })
 
-        return;
+        return;*/
     }
 
     const handleJoinRemove=(i)=>{
@@ -38,18 +40,16 @@ export default function ChatScreen(props){
               'Authorization': 'BEARER ' + props.route.params.TOKEN,
             }
           }
-
+          
         axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/leave',channelId,config)
         .then(()=>{
             setJoined(joined => {
-                let old = [...joined];
-                old.splice(i,1);
-                return old;
+                return joined.splice(i,1);
             });
             })
-      .catch((error)=>{
-            console.log(error);
-      })
+        .catch((error)=>{
+                console.log(error);
+        })
 
     }
 
@@ -67,13 +67,13 @@ export default function ChatScreen(props){
         axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/leave',id,config)
         .then(()=>{
             setUnJoined(unJoined => {
-                let old = [...unJoined];
-                old.splice(i,1);
-                return old;
-                getChannels();
+                return unJoined.splice(i,1);
             });
 
             })
+        .then(()=>{
+            getChannels();
+        })
             
       .catch((error)=>{
             console.log(error);
@@ -85,7 +85,7 @@ export default function ChatScreen(props){
         props.navigation.navigate('Channel', {channelId:joined[i].channelId});
     }
 
-    const joinChannel = async(i) =>{
+    const joinChannel = (i) =>{
         const accepted={
           channelId:unJoined[i].channelId,
         }
@@ -96,14 +96,16 @@ export default function ChatScreen(props){
         }
   
         console.log(accepted);
-        await axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/join',accepted,config)
+        axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/join',accepted,config)
         .then((response)=>{
           console.log(response);
-          joined.append(unJoined[i]);
-          unJoined.splice(i,1);
           getChannels();
         }
         )
+        .then(()=>{
+            joined.append(unJoined[i]);
+            unJoined.splice(i,1);   
+        })
         .catch((error)=>{
           console.log(error);
         }
@@ -111,29 +113,54 @@ export default function ChatScreen(props){
       }
 
     const getChats=()=>{
-        let chats = [ ];
-        if(!joined||!unJoined)
-        return;
-        if(unJoined.length){
-            for(let i=0;i<unJoined.length;i++){ 
-                chats.push(
-                  <View style={styles.channel}>
-                  <Text style={styles.channelLabel}>{unJoined[i].members}</Text>
-                  <TouchableHighlight onPress={() => handleUnJoinRemove(i)}  style={styles.removeButton}><Text style={styles.closeText}>x</Text></TouchableHighlight>
-                  <TouchableHighlight onPress={()=>joinChannel(i)} style={styles.reply}><Text style={styles.replyText}>Join</Text></TouchableHighlight>
-                  </View>
-               )}
+        let chats = []
+        {unJoined.length &&
+            (
+                unJoined.map((item, index)=>
+                {  chats.push(
+                    <View style={{marginTop:10}}>
+               
+                        <View style={styles.channel}>
+                        <Text style={styles.channelLabel}>{item.members}</Text>
+                        <TouchableHighlight onPress={() => handleUnJoinRemove(index)}  style={styles.removeButton}><Text style={styles.closeText}>x</Text></TouchableHighlight>
+                        <LinearGradient
+                        colors={['#FF8800','#FF7400', '#FF7A00', '#FF5300', '#FF2100', '#FF3C00', ]}
+                        start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+                        style={{ height: 55, width: 125,  borderRadius:50, alignItems: 'center', justifyContent: 'center',   marginTop:15,}}
+                        >
+                        <TouchableHighlight onPress={()=>joinChannel(index)} style={styles.reply}><Text style={styles.replyText}>Join</Text></TouchableHighlight>
+                        </LinearGradient>
+                        </View>
+    
+                    </View>
+                    )
+                })
+            )
+            
         }
-        if(joined.length)
-         {  for(let i=0;i<joined.length;i++){
-            chats.push(
-              <View style={styles.channel}>
-              <Text style={styles.channelLabel}>{joined[i].members}</Text>
-              <TouchableHighlight onPress={() => handleJoinRemove(i)}  style={styles.removeButton}><Text style={styles.closeText}>x</Text></TouchableHighlight>
-              <TouchableHighlight onPress={()=>reply(i)} style={styles.reply}><Text style={styles.replyText}>Message</Text></TouchableHighlight>
-              </View>
-           )}}
-        
+        { joined.length &&
+            (
+                joined.map((item, index)=>
+                {  chats.push(
+                    <View style={{marginTop:10}}>
+                
+                    <View style={styles.channel}>
+                    <Text style={styles.channelLabel}>{item.members}</Text>
+                    <TouchableHighlight onPress={() => handleJoinRemove(index)}  style={styles.removeButton}><Text style={styles.closeText}>x</Text></TouchableHighlight>
+                    <LinearGradient
+                    colors={['#FF8800','#FF7400', '#FF7A00', '#FF5300', '#FF2100', '#FF3C00', ]}
+                    start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+                    style={{ height: 55, width: 125,  borderRadius:50, alignItems: 'center', justifyContent: 'center',   marginTop:15,}}
+                    >
+                    <TouchableHighlight onPress={()=>reply(index)} style={styles.reply}><Text style={styles.replyText}>Message</Text></TouchableHighlight>
+                    </LinearGradient>
+                    </View>
+                 
+                    </View>
+                 )
+                })
+            )
+        } 
         console.log("chats" + chats);
         return chats;
     }
@@ -151,23 +178,13 @@ export default function ChatScreen(props){
                 <Text style={styles.topText}>
                 Conversations.
                 </Text>
+                <HomeButton navigation={props.navigation} align="right"/>
           
            
             </View>
             <ScrollView style={styles.displayChats}>
                 {getChats()}
             </ScrollView>
-            <Image source={
-                require('../assets/images/oc-1.png')
-            }
-            style={{
-                elevation:-1,
-                height:250,
-                width:widthVal,
-                borderTopRightRadius:100,
-                borderTopLeftRadius:100,
-            }}/>
-            <HomeButton navigation={props.navigation} color='turq'/>
         </View>
     )
 }
@@ -175,46 +192,44 @@ export default function ChatScreen(props){
 var widthVal = Dimensions.get('window').width + 10; 
 const styles = StyleSheet.create({
     topText:{
-        color:`#FFF`,
+        color:`#000`,
         fontSize:45,
-        fontFamily:`Nunito`,
-        fontWeight:`bold`,
+        fontFamily:`manrope-bold`,
         textAlign:`left`,
         marginTop:15,
-        //fontWeight:`bold`,
+        marginRight:15,
     },
     topBar:{
         padding:10,
-        height:50,
+        height:90,
         width:widthVal,
-        marginBottom:30,
-        
+        flexDirection: 'row',
     },
     container:{
         flex:1,
-        backgroundColor: '#202020',
-      
+        backgroundColor: '#FFF',
+        justifyContent:`center`,
+        alignContent:`center`,
+    },
+    displayChats:{
+        marginTop:20,
     },
     channel:{
-   
-        marginTop:60,
-        height:150,
-        width:widthVal,
-        borderWidth:1,
-        borderColor:`#000`,
-        borderRadius:8,
-        backgroundColor:`#202020`,
+        margin:10,
+        elevation:5,
+        height:130,
+        width:390,
+        borderRadius:10,
+        backgroundColor:`#FFF`,
         textAlign:`left`,
-        padding:5,
-        paddingLeft:10,
+        padding:10,
+        paddingLeft:20,
         paddingRight:20,
     },
     channelLabel:{
-        color:`#FFF`,
-        fontFamily:`Nunito`,
-        fontWeight:`300`,
+        color:`#000`,
+        fontFamily:`manrope-semi-bold`,
         fontSize:30,
-        
     },
     removeButton:{
         justifyContent:`center`,
@@ -228,25 +243,21 @@ const styles = StyleSheet.create({
     closeText:{
         textAlign:`center`,
         fontSize:45,
-        color:`#FFF`,
-        fontFamily:`Nunito`,
+        color:`#000`,
+        fontFamily:`manrope`,
     },
     reply:{
-        textAlign:`left`,
         justifyContent:`center`,
         alignContent:`center`,
         height:50,
         width:120,
-        marginTop:15,
-        borderRadius:10,
-        backgroundColor:`#47CEB2`,
-       
-
+        borderRadius:50,
+        backgroundColor:`#FFF`,
     },
     replyText:{
         textAlign:`center`,
-        fontFamily:`Nunito`,
-        color:`#202020`,
+        fontFamily:`manrope-light`,
+        color:`#FF7D00`,
         fontSize:20,
 
     }

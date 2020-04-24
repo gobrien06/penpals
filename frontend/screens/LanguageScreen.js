@@ -1,17 +1,20 @@
 import * as React from 'react';
-import { TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Text, ScrollView } from 'react-native';
+import { TextInput, StyleSheet, View, TouchableHighlight, Text, ScrollView } from 'react-native';
 import HomeButton from '../components/HomeButton';
 import axios from 'axios';
 import {LinearGradient} from 'expo-linear-gradient';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Geocoder from 'react-native-geocoding';
 
 export default function SignupScreen(props) {
   const [languages, setLanguages] = React.useState([]);
   const [formValue,setFormValue] = React.useState('');
   const [error,setError] = React.useState('');
   const [editing, setEdit] = React.useState(false);
+  const [coords, setCoords] = React.useState(['','']);
+  const [location, setLocation] = React.useState(['city','state']);
 
-  const textInput = React.createRef();
+  const textInput = React.createRef ();
   
   const submitInfo = () => {
     setLanguages(languages => {
@@ -26,8 +29,33 @@ export default function SignupScreen(props) {
         textInput.current.clear();
   }
 
-  const sendItems = async() =>{
-    /*onsole.log("sending");
+  const findLoc = () =>{
+    //Geocoder.init("xxxxxxxxxxxxxxxxxxxxxxxxx");
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            JSON.stringify(position);
+            console.log(position.coords);
+            setCoords(position.coords.latitude,position.coords.longitude);
+        },
+        (error) =>{
+            console.log(error.message);
+            Alert.alert(error.message);
+        }
+    )
+    /*
+    Geocoder.from(coords[0],coords[1])
+    .then((geocoded)=>{
+        let results = geocoded.results[0].address_components[0];
+        console.log(results);
+        setLoc(results);
+    })
+    .catch((error)=>{
+        console.log(error);
+    })*/
+
+  }
+  const sendItems = () =>{
+    /*console.log("sending");
     const config={
       headers: {
         'Authorization': 'BEARER ' + props.TOKEN,
@@ -35,13 +63,14 @@ export default function SignupScreen(props) {
     }
     const user={
       language:languages,
+      location:location,
     }
     if(languages===[]){
       setError('You have no languages!');
       return;
     }
 
-    await axios.post('http://lahacks-hobbyist.tech:3000/users/update',user,config)
+    axios.post('http://lahacks-hobbyist.tech:3000/users/update',user,config)
     .then((response)=>{
         console.log(response);
       })
@@ -49,7 +78,7 @@ export default function SignupScreen(props) {
       setError('Network error. Please try again.');
     })
   
-    //props.navigation.navigate('Search');*/
+
   }
 
   const getInitial= async()=>{
@@ -63,6 +92,7 @@ export default function SignupScreen(props) {
     .then((response)=>{
       if(response.data.language){
         setLanguages(response.data.language);
+        setLocation(response.data.location);
       }
      
     })
@@ -76,21 +106,18 @@ export default function SignupScreen(props) {
       getInitial();
     },[]
   )*/
+  props.navigation.navigate('Home');
   }
 
   const generateItem = () =>{
         return (languages.map((item, index)=>{
             return (
-            <LinearGradient
-            colors={['#FF8800','#FF7400',  '#FF7A00', '#FF5300', '#FF2100', '#FF3C00']}
-            start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
-            style={{ height: 55, width: 235, borderRadius:10, alignItems: 'center', justifyContent: 'center', margin:5,}}
-            >
+       
             <View style={styles.languageItem}>
             <Text style={styles.languageText}>{item}</Text>
             <TouchableHighlight onPress={() => handleRemove(index)}  style={styles.removeButton}><Text style={styles.closeText}>x</Text></TouchableHighlight>
             </View>
-            </LinearGradient>
+          
             )
         })
         )
@@ -108,8 +135,7 @@ export default function SignupScreen(props) {
     });
   }
 
-  var widthVal = Dimensions.get('window').width; 
-
+  var coordsStr = "("+Math.trunc(coords[0])+","+Math.trunc(coords[1])+")";
     return (
         <View style={styles.container}>
           <KeyboardAwareScrollView style={{}}   scrollEnabled={false} extraScrollHeight={130} enableOnAndroid={true} enableResetScrollToCoords={true}>
@@ -129,8 +155,8 @@ export default function SignupScreen(props) {
 
             <View style={styles.midHold}>
             <View style={{flexDirection: 'row',flexWrap: 'wrap', alignItems: 'flex-start',}}>
-            <Text style={styles.settingTxt}>Location: {props.location}  </Text>
-            <TouchableHighlight style={styles.editBtn} onPress={()=>props.setLoc()}>
+            <Text style={styles.settingTxt}>Location:<Text style={{fontSize:20,}}>  {coords && coordsStr}  </Text> </Text>
+            <TouchableHighlight style={styles.editBtn} onPress={()=>findLoc()}>
             <Text style={styles.smallbuttonText}>Find</Text>
             </TouchableHighlight>
             </View>
@@ -163,6 +189,7 @@ export default function SignupScreen(props) {
             onChangeText={(text) => setFormValue(text)}
             onSubmitEditing={submitInfo}
             autoCapitalize="words"
+            autoCorrect={true}
             ref={textInput}
             style={styles.textInput}/>
             <View style={{flexDirection: 'row',flexWrap: 'wrap', alignItems: 'flex-start',}}>
@@ -177,7 +204,7 @@ export default function SignupScreen(props) {
             <LinearGradient
             colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
             start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
-            style={{ height: 70, width: 230,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
+            style={{ height: 65, width: 205,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
             >
             <TouchableHighlight style={styles.touchStyle} onPress={()=>sendItems()} >
               <Text style={styles.buttonText}>Done</Text>
@@ -193,7 +220,6 @@ export default function SignupScreen(props) {
       );
 }
 
-var widthVal = Dimensions.get('window').width + 10; 
 
 const styles = StyleSheet.create({
     errorText:{
@@ -212,7 +238,7 @@ const styles = StyleSheet.create({
       top:0,
     },
     midHold:{
-      height:400,
+      height:360,
       margin:20, 
       marginTop:0, 
     },
@@ -231,14 +257,16 @@ const styles = StyleSheet.create({
       justifyContent:`center`,
       alignContent:`center`,
       padding:10,
-      paddingLeft:30,
+      paddingLeft:65,
     },
-    languageItem:{     
+    languageItem:{ 
+      elevation:5,
       alignItems:`center`,
       justifyContent:`center`,
       backgroundColor:`#FFF`,
       height: 50,
       width: 230,
+      marginTop:20,
       padding:8,
       borderRadius: 10,
     
@@ -255,7 +283,7 @@ const styles = StyleSheet.create({
     },
     midText:{
         fontSize:60,
-        marginTop:20,
+        marginTop:40,
         fontFamily:'manrope-semi-bold',
         textAlign:`center`,
     },
@@ -265,7 +293,7 @@ const styles = StyleSheet.create({
       backgroundColor:`#FFF`,
       justifyContent:`center`,
       padding:5,
-      width:220,
+      width:200,
       height:60,
     },
       buttonText:{
@@ -282,14 +310,13 @@ const styles = StyleSheet.create({
         textAlign:`center`,
       },
       editBtn:{
+        elevation:5,
         height: 40,
         width: 70,
         alignItems:`center`,
         justifyContent:`center`,
         backgroundColor:`#FFF`,
         borderRadius:10,
-        borderColor:`#000`,
-        borderWidth:1,
         margin:10,
         marginTop:25,
       },

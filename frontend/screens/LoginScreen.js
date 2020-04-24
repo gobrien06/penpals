@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { Image, TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Text} from 'react-native';
+import {  TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Text} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import HomeButton from '../../frontend/components/HomeButton';
 import {LinearGradient} from 'expo-linear-gradient';
-import {BlurView} from 'expo-blur';
 import axios from 'axios';
 
 export default function LogIn(props) {
@@ -12,7 +11,7 @@ export default function LogIn(props) {
     const [error, setError] = React.useState(null);
 
     const submitInfo = async() => {
-      let success = false;
+      /*let success = false;
       const user={
         username:usernm,
         password:password,
@@ -38,19 +37,19 @@ export default function LogIn(props) {
         setError("Credentials incorrect. Please try again.")
         return;
       }
-        props.setUser(usernm);
+        props.setUser(usernm);*/
         props.navigation.navigate('Home');
+        props.route.params.setTOKEN('gdfgg');
     }
 
     return (
+      
         <View style={styles.container}>
             <KeyboardAwareScrollView style={{flexGrow:1,}} enableAutomaticScroll={true} extraScrollHeight={100} enableOnAndroid={true}  >
             
-         
             <Text style={styles.midText}>
-              Welcome.
+              Login.
             </Text>
-              
             <LinearGradient
             colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
             start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
@@ -75,7 +74,7 @@ export default function LogIn(props) {
             <LinearGradient
             colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
             start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
-            style={{ height: 70, width: 230,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
+            style={{ height: 65, width: 225,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
             >
             <TouchableHighlight style={styles.touchStyle} onPress={()=>submitInfo()} >
               <Text style={styles.buttonText}>Continue</Text>
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
       marginLeft:20,
       fontSize:60,
       fontFamily:'manrope-semi-bold',
-      marginTop:50,
+      marginTop:40,
       textAlign:`left`,
       color:`#000`,
     },
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
         fontSize:25,
         width:300,
         height:75,
-        borderRadius:5,
+        borderRadius:15,
       },
       buttonContainer:{
         alignItems: 'center',

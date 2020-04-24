@@ -1,13 +1,15 @@
 import * as React from 'react';
-import  { Bubble, GiftedChat, InputToolbar, Send, Message} from 'react-native-gifted-chat';
-import {StyleSheet, View} from 'react-native';
+//import  { Bubble, GiftedChat, InputToolbar, Send, Message} from 'react-native-gifted-chat';
+import {StyleSheet, FlatList, View, Text, TouchableHighlight, TextInput} from 'react-native';
 import axios from 'axios';
-import HomeButton from '../../../Hobbyist/components/HomeButton';
+import HomeButton from '../components/HomeButton';
+import LinearGradient from 'expo-linear-gradient';
 
 export default function ChannelScreen(props){
-    const [messages,setMessages] = React.useState([]);
+    const [messages,setMessages] = React.useState([{content:'gdfgfdsgdg',user:'gdfgfdg'}]);
+    const [user, setUser] = React.useState('placeholder');
 
-    const getMessages=()=>{
+    const getMessages=()=>{/*
         const config = {
             headers: {
               'Authorization': 'BEARER ' + props.TOKEN,
@@ -32,11 +34,11 @@ export default function ChannelScreen(props){
         })
         console.log("msgs"+messages);
      
-    
+    */
     }
 
 
-    const sendMessage=(content)=>{
+    const sendMessage=(content)=>{ /*
         const config = {
             headers: {
               'Authorization': 'BEARER ' + props.TOKEN,
@@ -54,30 +56,13 @@ export default function ChannelScreen(props){
         .catch((error)=>{
             console.log(error);
         })
-        snapshot();
+        */
     }
 
-    const renderBubble=(props)=>{
-        return <Bubble {...props} 
-
-        wrapperStyle={{
-            left: {
-              backgroundColor: '#47CEB2',
-            },
-            right:{
-                backgroundColor:'#000',
-            
-            }
-          }}
-       
-          />
-    }
-    
-
+/*
     const onSend = (newMessage =[])=>{
         setMessages(GiftedChat.append(messages,newMessage));
         sendMessage(newMessage);
-        snapshot();
     }
 
     const renderInputToolbar=(props)=>{
@@ -86,14 +71,43 @@ export default function ChannelScreen(props){
     }
     
     const renderSend=(props)=>{
-        return <Send {...props} textStyle={{color:'#47CEB2',  fontSize:25,
-        fontFamily:'Nunito',}}/>
+        return <Send {...props} textStyle={{color:'#FF7D00',  fontSize:25,
+        fontFamily:'manrope',}}/>
     }
-    
+    */
     React.useEffect(getMessages,[]);
 
     return(
-            <>
+        <View style={styles.container}>
+            <View style={styles.topbar}>
+                <Text style={styles.toptxt}>
+                    {user}
+                </Text>
+                <HomeButton navigation={props.navigation} align='right'/>
+            </View>
+            <View style={styles.chatcontain}>
+                <FlatList />
+            </View>
+            <View style={styles.footer}>
+                <TextInput />
+                <LinearGradient
+                   colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
+                   start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+                   style={{ height: 65, width: 205,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
+                >
+                <TouchableHighlight>
+                    <Text style={styles.btnTxt}>
+                        Send
+                    </Text>
+                </TouchableHighlight>
+                </LinearGradient>
+            </View>
+            </View> 
+    ) 
+}
+
+/*
+  <>
 
             <GiftedChat
                 isAnimated
@@ -110,34 +124,64 @@ export default function ChannelScreen(props){
             alwaysShowSend={true}
             renderSend={renderSend}
             bottomOffset={83}
-            listViewProps={
-                {
-                    style: {
-                    backgroundColor: '#202020',
-                    },
-            }}
             />
-          <HomeButton navigation={props.navigation} color='turq'/>
             </>
       
-    ) 
-}
+            */
 
 
 
 const styles = StyleSheet.create({
-    empty:{
-        backgroundColor:'#202020',
+    container:{
+        flex:1,
+        backgroundColor: '#FFF',
     },
     toolBar:{
-        backgroundColor:'#202020',
-        borderTopWidth:0,
+        borderTopWidth:0,    
         height:50,
     },
-    toolText:{
-        fontSize:20,
-        fontFamily:'Nunito',
-        color:'grey'
-
-    }
+    toptxt:{
+        width:250,
+        fontSize:40,  
+        marginRight:90,
+        fontFamily:`manrope-bold`,
+    },
+    topbar:{
+        padding:10,  
+        paddingTop:20,
+        flexDirection: 'row',
+        height:90,
+        flexWrap: 'wrap', 
+        alignItems: 'flex-start', 
+    },
+    footer:{
+        position: 'absolute',
+        flexDirection: 'row',
+        height:50,
+        flexWrap: 'wrap', 
+        alignItems: 'flex-end',
+        padding:20,
+        paddingTop:0,  
+        bottom:0,
+    },
+    bubbleFrom:{
+        height:200,
+        width:200,
+        backgroundColor:`#FDB372`,
+    },
+    bubbleTxt:{
+        color:`#FFF`,
+        fontSize:25,
+        fontFamily:`manrope`,
+    },
+    submitBtn:{
+        elevation:5,
+        borderRadius:50,
+        width:70,
+    },
+    btnTxt:{
+        color:`#FF2200`,
+        fontSize:25,
+        fontFamily:`manrope-light`,
+    },
 });
