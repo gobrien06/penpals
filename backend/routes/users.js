@@ -1,9 +1,19 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const users = require('../models/users');
+const auth = require('../models/auth');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+
+router.post('/users', function(req, res) {
+    users.insert(req, res);
+});
+
+router.post('/users/delete', function(req, res) {
+    users.delete_user(req, res);
+});
+
+router.post('/auth', function(req, res) {
+    auth.authenticate(req, res);
 });
 
 module.exports = router;
