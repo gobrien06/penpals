@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { Image, Platform, StyleSheet, View, Dimensions, TouchableHighlight, Text } from 'react-native';
-
-import { ScrollView } from 'react-native-gesture-handler';
-
-import { MonoText } from '../components/StyledText';
+import {LinearGradient} from 'expo-linear-gradient';
 
 export default function HomeScreen(props) {
   const search = () =>{
@@ -53,19 +50,27 @@ export default function HomeScreen(props) {
           
            <Text
           style={{
-            fontFamily:`Nunito`,
+            fontFamily:`manrope`,
             fontSize:60,
             color:'#000',
+            fontWeight:`bold`,
+      
           }}>
             PenPals
           </Text>
         </View>
 
         <View style={styles.buttonContainer}>
+        <LinearGradient
+            colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
+            start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+            style={{ height: 65, width: 290,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
+            >
         <TouchableHighlight style={styles.touchStyle} onPress={()=>login()}>
         
           <Text style={styles.buttonText}>Login</Text>
         </TouchableHighlight>
+        </LinearGradient>
         <TouchableHighlight onPress={()=>signUp()}>
           <Text style={styles.freeText}>Or, click here to sign up.</Text>
         </TouchableHighlight>
@@ -96,7 +101,7 @@ export default function HomeScreen(props) {
            
             <Text
            style={{
-             fontFamily:`nunito-bold`,
+             fontFamily:`manrope-bold`,
              fontSize:60,
              color:'#FAE99E',
            }}>
@@ -132,7 +137,6 @@ var widthVal = Dimensions.get('window').width + 10;
 const styles = StyleSheet.create({
   freeText:{
     margin:20,
-    marginTop:0,
     width:400,
     color:`black`,
     fontSize:20,
@@ -148,16 +152,16 @@ const styles = StyleSheet.create({
     justifyContent:`center`,
   },
   touchStyle:{
-    marginTop:5,
-    backgroundColor:`#FFC83C`,
-    borderRadius:10,
+
+    backgroundColor:`#FFF`,
+    borderRadius:50,
     marginVertical:20,
     alignItems:`center`,
     justifyContent:`center`,
-    padding:5,
-    width:300,
 
-    height:50,
+    width:280,
+
+    height:55,
   },
   lilLog:{
     marginTop:10,
@@ -173,8 +177,8 @@ const styles = StyleSheet.create({
   buttonText:{
     fontSize:25,
 
-    fontFamily:`Nunito`,
-    color:`#202020`,
+    fontFamily:`manrope`,
+    color:`#FF3D00`,
   },
   bottomBubble:{
     alignSelf:`flex-end`,

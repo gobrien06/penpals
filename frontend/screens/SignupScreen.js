@@ -3,13 +3,17 @@ import { Image, TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Tex
 import { ScrollView } from 'react-native-gesture-handler';
 import HomeButton from '../components/HomeButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {LinearGradient} from 'expo-linear-gradient';
+
 import axios from 'axios';
+
 
 export default function SignupScreen(props) {
     const [usernm,setUser] = React.useState(null);
     const [password,setPassword] = React.useState(null);
     const [phone,setPhone] = React.useState(null);
     const [error, setError] = React.useState('');
+    const [fullName,setFullName] = React.useState(['first','last']);
  
 
     const submitInfo =  async() => {
@@ -17,6 +21,7 @@ export default function SignupScreen(props) {
         username:usernm,
         password:password,
         phone:phone,
+        name:fullName[0],
       }
       //console.log(user);
       if(!usernm || !password || !phone){
@@ -39,24 +44,15 @@ export default function SignupScreen(props) {
         <View style={styles.container}>
           <KeyboardAwareScrollView style={{flexGrow:1,}} enableAutomaticScroll="true" extraScrollHeight={200} enableOnAndroid={true}  >
 
-            <View>
-            <Image
-                source={
-                  require('../assets/images/oc-1.png')
-                }
-                style={styles.headerImage}
-              />
-        
-
-               
-            <HomeButton navigation={props.navigation}  />
-
-            </View>
-
          
             <Text style={styles.midText}>
             Let's start.
             </Text>
+            <LinearGradient
+            colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
+            start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+            style={{ height: 2.5, width: 325,alignSelf: 'flex-end'}}
+           />
 
             <View style={styles.buttonContainer}>
             <TextInput
@@ -64,6 +60,22 @@ export default function SignupScreen(props) {
             placeholder="Username"
             style={styles.textInput}
             onChangeText={(text) => setUser(text)}/>
+
+            <View style={{flexDirection: 'row',flexWrap: 'wrap', alignItems: 'flex-start',}}>          
+            <TextInput
+            secureTextEntry={false}
+            placeholder="First"
+            style={styles.textInputName}
+            onChangeText={(text) => setFullName((fullName)=>{fullName[0] = text})}
+            />
+             <TextInput
+            secureTextEntry={false}
+            placeholder="Last"
+            style={styles.textInputName}
+            onChangeText={(text) => setFullName((fullName)=>{fullName[1] = text})}
+            /> 
+            </View>
+                
             <TextInput
             secureTextEntry={true}
             placeholder="Password"
@@ -76,19 +88,21 @@ export default function SignupScreen(props) {
             style={styles.textInput}
             onChangeText={(text) => setPhone(text)}
             />
+            <View style={{height:20}}/>
+            <LinearGradient
+            colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
+            start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+            style={{ height: 70, width: 230,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
+            >
             <TouchableHighlight style={styles.touchStyle} onPress={()=>submitInfo()} >
               <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableHighlight>
+            </LinearGradient>
+
             <Text style={styles.errorText}>
             {error}
             </Text>
             </View>
-            <Image
-                source={
-                    require('../assets/images/bubblesgrey.png')
-                }
-                style={styles.bottomBubble}
-            />
                  </KeyboardAwareScrollView>
         </View>
       );
@@ -98,29 +112,16 @@ var widthVal = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
     errorText:{
-      elevation:2,
-      margin:10,
-      marginTop:-30,
+      elevation:1,
+      marginLeft:10,
       padding:20,
       fontSize:20,
-      color:`#fff`,
+      color:`grey`,
+      fontFamily:`manrope`,
     },
     container: {
         flex: 1,
-
-
-        backgroundColor: '#202020',
-     
-        
-    },
-    headerImage:{
-   
-      borderBottomLeftRadius:75,
-        width:widthVal,
-        height:500,
-        marginTop:-240,
-        backgroundColor:`rgba(71, 206, 178, 0.4)`,
-   
+        backgroundColor: '#FFF',    
     },
     headerBubbles:{
         width:100,
@@ -129,46 +130,55 @@ const styles = StyleSheet.create({
         marginTop:25,
     },
     midText:{
-        fontSize:75,
-        marginTop:-79,
-        fontFamily:'Nunito',
-        fontWeight:`bold`,
+        marginRight:20,
+        fontSize:60,
+        fontFamily:'manrope-semi-bold',
+        marginTop:50,   
         textAlign:`right`,
-        color:`#202020`,
+        color:`#000`,
     },
     touchStyle:{
-        marginTop:20,
-        marginBottom:30,
-        backgroundColor:`#FAE99E`,
-        borderRadius:50,
-        alignItems:`center`,
-        justifyContent:`center`,
-        padding:5,
-        width:200,
-        height:60,
+      borderRadius:50,
+      alignItems:`center`,
+      justifyContent:`center`,
+      padding:5,
+      width:220,
+      height:60,
+      backgroundColor:`#FFF`,
+      alignItems:`center`,
+      justifyContent:`center`,
       },
       buttonText:{
         fontSize:25,
-        fontWeight:`bold`,
-        color:`#202020`,
+        color:`#FF3D00`,
       },
       bottomBubble:{
         alignSelf:`flex-end`,
         marginTop:-170,
       },
       textInput:{
-          margin:10,
-          padding:10,
-          backgroundColor:`#1A1A1A`,
-          color:`#47CEB2`,
-          fontSize:25,
-          width:300,
-          height:70,
-          borderRadius:10,
+        backgroundColor:`#F4F4F4`,
+        color:`#FF7D00`,
+        margin:20,
+        padding:10,
+        fontSize:25,
+        width:300,
+        height:70,
+        borderRadius:5,
+      },
+      textInputName:{
+        backgroundColor:`#F4F4F4`,
+        color:`#FF7D00`,
+        margin:10,
+        padding:10,
+        fontSize:25,
+        width:140,
+        height:70,
+        borderRadius:5,
       },
       buttonContainer:{
-            alignItems: 'center',
-            justifyContent: 'center', 
-          marginTop:5,
+        alignItems: 'center',
+        justifyContent: 'center', 
+        margin:20,
       }
 });

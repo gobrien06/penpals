@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {View,ScrollView,Text,StyleSheet, TouchableHighlight, Dimensions, Image} from 'react-native';
 import axios from 'axios';
-import HomeButton from '../components/HomeButton';
+import HomeButton from '../../../Hobbyist/components/HomeButton';
 
 export default function ChatScreen(props){
     const [unJoined, setUnJoined] = React.useState([]);

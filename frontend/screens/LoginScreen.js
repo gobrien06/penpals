@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Image, TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Text } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Image, TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Text} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import HomeButton from '../../../Hobbyist/components/HomeButton';
+import HomeButton from '../../frontend/components/HomeButton';
+import {LinearGradient} from 'expo-linear-gradient';
+import {BlurView} from 'expo-blur';
 import axios from 'axios';
 
 export default function LogIn(props) {
@@ -38,29 +39,23 @@ export default function LogIn(props) {
         return;
       }
         props.setUser(usernm);
-        props.navigation.navigate('SearchSetup');
+        props.navigation.navigate('Home');
     }
 
     return (
         <View style={styles.container}>
-            <KeyboardAwareScrollView style={{flexGrow:1,}} enableAutomaticScroll="true" extraScrollHeight={100} enableOnAndroid={true}  >
-             
-            <View>
-              <Image
-              source={
-                require('../assets/images/iu.png')
-              }
-              style={styles.headerImage}
-              />
-        
-            <HomeButton navigation={props.navigation}  />
-
-            </View>
-
+            <KeyboardAwareScrollView style={{flexGrow:1,}} enableAutomaticScroll={true} extraScrollHeight={100} enableOnAndroid={true}  >
+            
          
             <Text style={styles.midText}>
               Welcome.
             </Text>
+              
+            <LinearGradient
+            colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
+            start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+            style={{ height: 2.5, width: 325,}}
+           />
 
             <View style={styles.buttonContainer}>
             <TextInput
@@ -76,9 +71,17 @@ export default function LogIn(props) {
             placeholder="Password"
             onChangeText={(text) => setPassword(text)}
             style={styles.textInput}/>
+            <View style={{height:40,}}/>
+            <LinearGradient
+            colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
+            start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+            style={{ height: 70, width: 230,  borderRadius:50, alignItems: 'center', justifyContent: 'center',}}
+            >
             <TouchableHighlight style={styles.touchStyle} onPress={()=>submitInfo()} >
-              <Text style={styles.buttonText}>Login</Text>
+              <Text style={styles.buttonText}>Continue</Text>
             </TouchableHighlight>
+            </LinearGradient>
+       
             </View>
             <Text style={styles.errorText}>
             {error}
@@ -94,82 +97,58 @@ var widthVal = Dimensions.get('window').width;
 const styles = StyleSheet.create({
     errorText:{
       elevation:1,
-      margin:10,
+      marginLeft:10,
+      marginTop:-20,
       padding:20,
       fontSize:20,
-      color:`#fff`,
+      color:`grey`,
+      fontFamily:`manrope`,
     },
     container: {
         flex: 1,
-        backgroundColor: '#202020',
-    },
-    headerImage:{
-
-        borderBottomRightRadius:75,
-        width:widthVal,
-        height:500,
-        marginTop:-240,
-        backgroundColor:`rgba(71, 206, 178, 0.4)`,
-   
-    },
-    headerBubbles:{
-        width:100,
-        height:120,
-        position:`absolute`,
-        marginTop:25,
+        backgroundColor: '#FFF',
     },
     midText:{
-        marginLeft:10,
-        fontSize:78,
-      
-        fontFamily:'Nunito',
-          fontWeight:`bold`,
-        marginTop:-80,
-
+        marginLeft:20,
+        fontSize:60,
+        fontFamily:'manrope-semi-bold',
+        marginTop:50,
         textAlign:`left`,
-        color:`#202020`,
+        color:`#000`,
     },
-    touchStyle:{
-        
+    touchStyle:{    
       borderRadius:50,
-      
       alignItems:`center`,
       justifyContent:`center`,
       padding:5,
-      width:200,
-  
+      width:220,
       height:60,
-        marginTop:20,
-     
-        backgroundColor:`#FAE99E`,
-
-        alignItems:`center`,
-        justifyContent:`center`,
+      backgroundColor:`#FFF`,
+      alignItems:`center`,
+      justifyContent:`center`,
 
       },
       buttonText:{
         fontSize:25,
- 
-        color:`#202020`,
+        color:`#FF3D00`,
       },
       bottomBubble:{
         alignSelf:`flex-end`,
         marginTop:-140,
       },
       textInput:{
-          margin:10,
-          padding:10,
-          backgroundColor:`#1A1A1A`,
-          color:`#47CEB2`,
-          fontSize:25,
-          width:300,
-          height:75,
-          borderRadius:10,
+        margin:20,
+        padding:10,
+        backgroundColor:`#F4F4F4`,
+        color:`#FF7D00`,
+        fontSize:25,
+        width:300,
+        height:75,
+        borderRadius:5,
       },
       buttonContainer:{
-    
-            alignItems: 'center',
-            justifyContent: 'center', 
-          marginTop:30,
+        alignItems: 'center',
+        justifyContent: 'center', 
+        margin:40,
       }
 });

@@ -8,7 +8,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from './screens/HomeScreen';
-
+import LoginScreen from './screens/LoginScreen';
+import SignUpScreen from './screens/SignupScreen';
 
 
 import useLinking from './navigation/useLinking';
@@ -20,10 +21,12 @@ const Stack = createStackNavigator();
 
 export default function App(props) {
   Font.loadAsync({
-    'nunito-extra-bold':require('./assets/fonts/Nunito-ExtraBold.ttf'),
-    'Nunito':require('./assets/fonts/Nunito-Regular.ttf'),
-    'nunito-light':require('./assets/fonts/Nunito-Light.ttf'),
-    'nunito-bold': require('./assets/fonts/Nunito-Bold.ttf'),
+    'manrope-extra-bold':require('./assets/fonts/Manrope-ExtraBold.ttf'),
+    'manrope-extra-light':require('./assets/fonts/Manrope-ExtraLight.ttf'),
+    'manrope':require('./assets/fonts/Manrope-Regular.ttf'),
+    'manrope-light':require('./assets/fonts/Manrope-Light.ttf'),
+    'manrope-semi-bold':require('./assets/fonts/Manrope-SemiBold.ttf'),
+    'manrope-bold': require('./assets/fonts/Manrope-Bold.ttf'),
   });
   
 
@@ -46,7 +49,7 @@ export default function App(props) {
         // Load fonts
         await Font.loadAsync({
           ...Ionicons.font,
-          'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+          'space-mono': require('./assets/fonts/Manrope-Regular.ttf'),
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
@@ -71,6 +74,12 @@ export default function App(props) {
             <Stack.Screen name="Home">
             {props => <HomeScreen {...props} TOKEN={TOKEN} setTOKEN={setTOKEN}/>}
             </Stack.Screen> 
+            <Stack.Screen name="Login">
+            {props => <LoginScreen {...props} setUser={setUser}/>}
+            </Stack.Screen>
+            <Stack.Screen name="Signup">
+            {props => <SignUpScreen {...props} setUser={setUser}/>}
+            </Stack.Screen>
           
           </Stack.Navigator>
         </NavigationContainer>
