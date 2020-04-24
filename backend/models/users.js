@@ -26,6 +26,7 @@ const query_authenticate = 'SELECT * FROM users WHERE username = $1';
 
 function delete_user(req, res) {
     pg_client.query(query_authenticate, [req.body.username]).then(result => {
+        console.log(result);
         bcrypt.compare(req.body.password, result[0]['pass'], (err, result) => {
             if(result == true) {
                 pg_client.query(query_delete, [req.body.username]).then(result => {
