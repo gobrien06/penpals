@@ -22,6 +22,7 @@ function insert(req, res) {
 }
 
 const query_delete = 'DELETE FROM users WHERE username = $1';
+const query_authenticate = 'SELECT * FROM users WHERE username = $1';
 
 function delete_user(req, res) {
     pg_client.query(query_authenticate, [req.body.username]).then(result => {
