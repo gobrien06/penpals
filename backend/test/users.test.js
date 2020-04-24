@@ -12,8 +12,9 @@ test('Signup', done => {
     request(app)
         .post('/users')
         .send(formData)
-        .expect(res => {
-            console.log(res);
+        .then(res => {
+            console.log(res.body);
             done();
         });
+        
 });

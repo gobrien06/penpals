@@ -4,6 +4,7 @@ const users = require('../models/users');
 
 
 router.post('/users', function(req, res) {
+    console.log('afdsdafs');
     users.insert(req, res);
 });
 
