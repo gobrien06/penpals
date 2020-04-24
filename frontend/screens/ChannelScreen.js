@@ -1,6 +1,5 @@
 import * as React from 'react';
-//import  { Bubble, GiftedChat, InputToolbar, Send, Message} from 'react-native-gifted-chat';
-import {StyleSheet, ScrollView, View, Text, TouchableHighlight, TextInput} from 'react-native';
+import {StyleSheet, ScrollView, View, Text, TouchableHighlight, TextInput, ActivityIndicator} from 'react-native';
 import axios from 'axios';
 import HomeButton from '../components/HomeButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -11,7 +10,10 @@ export default function ChannelScreen(props){
     const [formValue,setFormValue] = React.useState('');
     const [user, setUser] = React.useState('placeholder');
     const [newMessages,setNewMessages] = React.useState([]);
-
+    const [loading, setLoading] = React.useState(false);
+    var source;
+    const CancelToken = axios.CancelToken;
+    source = CancelToken.source();
     const textInput = React.createRef();
 
     const submitInfo = () => {
@@ -22,13 +24,13 @@ export default function ChannelScreen(props){
             newMessages.push(formValue);
             return newMessages;
         });
-            //console.log("submitted");
             setFormValue('');
             textInput.current.clear();
       }
 
     
-    const getMessages=()=>{/*
+    const getMessages=()=>{
+        setLoading(true);
         const config = {
             headers: {
               'Authorization': 'BEARER ' + props.TOKEN,
@@ -40,10 +42,12 @@ export default function ChannelScreen(props){
           }
 
              
-        axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/messages',channelId,config)
+        axios.post('http://104.154.57.17:3000/chat/channels/messages',channelId,config, {cancelToken:source.token})
         .then((response)=>{
-            if(!(response.data[0]))
+            if(!(response.data[0])){
+                setLoading(false);
                 return;
+            }
             else{
                 setMessages(response.data.map((e)=>{return e.content}));
                 }
@@ -51,9 +55,8 @@ export default function ChannelScreen(props){
         .catch((errors)=>{
             console.log(errors);
         })
-        console.log("msgs"+messages);
-     
-    */
+        setLoading(false);
+        console.log("msgs"+messages);  
     }
 
     const displayMessages = () =>{
@@ -77,7 +80,8 @@ export default function ChannelScreen(props){
         }))
     }
     
-    const sendMessage=(content)=>{ /*
+    const sendMessage=(content)=>{ 
+        setLoading(true);
         const config = {
             headers: {
               'Authorization': 'BEARER ' + props.TOKEN,
@@ -88,33 +92,17 @@ export default function ChannelScreen(props){
            content:content[0],
            channelId: props.route.params.channelId,
         }
-        axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/send', message,config)
+        axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/send', message,config, {cancelToken:source.token})
         .then((response)=>{
             console.log(response.data);
         })
         .catch((error)=>{
             console.log(error);
         })
-        */
+        setLoading(false);
     }
 
-/*
-    const onSend = (newMessage =[])=>{
-        setMessages(GiftedChat.append(messages,newMessage));
-        sendMessage(newMessage);
-    }
-
-    const renderInputToolbar=(props)=>{
-        
-        return <InputToolbar {...props} containerStyle={styles.toolBar}/>
-    }
-    
-    const renderSend=(props)=>{
-        return <Send {...props} textStyle={{color:'#FF7D00',  fontSize:25,
-        fontFamily:'manrope',}}/>
-    }
-    */
-
+    React.useEffect(getMessages,[]);
     return(
         <View style={styles.container}>
         <KeyboardAwareScrollView style={{}}   scrollEnabled={false} extraScrollHeight={130} enableOnAndroid={true} enableResetScrollToCoords={true}>
@@ -130,6 +118,7 @@ export default function ChannelScreen(props){
                     {displayMessages()}
                 </ScrollView>
             </View>
+            {loading && <ActivityIndicator size="large"  style={{marginBottom:15}} color='#FDB372'/>}
             <View style={styles.footer}>
                 <TextInput
                 secureTextEntry={false}
@@ -157,30 +146,6 @@ export default function ChannelScreen(props){
 multiline = {true}
                 numberOfLines = {3}
                 */
-/*
-  <>
-
-            <GiftedChat
-                isAnimated
-            messages={messages}
-            onSend={ newMessage=>onSend(newMessage)}
-            user={{
-                _id: props.TOKEN,
-                name:props.username,
-            }}
-
-
-            renderInputToolbar={renderInputToolbar}
-            renderBubble={renderBubble}
-            alwaysShowSend={true}
-            renderSend={renderSend}
-            bottomOffset={83}
-            />
-            </>
-      
-            */
-
-
 
 const styles = StyleSheet.create({
     chatcontain:{
@@ -249,7 +214,7 @@ const styles = StyleSheet.create({
         fontFamily:`manrope-light`,
     },
     submitBtn:{
-        marginBottom:30, marginLeft:30,
+        marginBottom:35, marginLeft:45,
         elevation:5,
         borderRadius:15,
         width:85,

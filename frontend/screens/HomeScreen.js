@@ -1,26 +1,37 @@
 import * as React from 'react';
-import { Image, Platform, StyleSheet, View, Dimensions, TouchableHighlight, Text } from 'react-native';
+import { Image, Platform, StyleSheet, View, Dimensions, TouchableHighlight, Text, ActivityIndicator } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 
 export default function HomeScreen(props) {
+  const [loading, setLoading] = React.useState(false);
   const signUp = () =>{
+    setLoading(true);
     props.navigation.navigate('Signup', {setTOKEN:props.setTOKEN});
+    setLoading(false);
   }
 
   const login=()=>{
+    setLoading(true);
     props.navigation.navigate('Login',{setTOKEN:props.setTOKEN});
+    setLoading(false);
   }
 
   const logout=()=>{
+    setLoading(true);
     props.setTOKEN(null);
+    setLoading(false);
   }
 
   const goToEdit=()=>{
+    setLoading(true);
     props.navigation.navigate('Language',{TOKEN:props.TOKEN});
+    setLoading(false);
   }
 
   const toChat=()=>{
+    setLoading(true);
     props.navigation.navigate('Chat',{TOKEN:props.TOKEN});
+    setLoading(false);
   }
 
 
@@ -69,6 +80,7 @@ export default function HomeScreen(props) {
         <Text style={styles.freeText}>Or, click here to sign up.</Text>
       </TouchableHighlight>
       </View>
+      {loading && <ActivityIndicator size="large" style={{marginBottom:20}} color='#FDB372'/>}
     </View> )
     : (<View style={styles.container}>
     <View style={styles.welcomeContainer}>
@@ -101,6 +113,7 @@ export default function HomeScreen(props) {
 </TouchableHighlight>
 
 </View>
+{loading && <ActivityIndicator size="large" style={{marginBottom:20}} color='#FDB372'/>}
 
 </View>
     )

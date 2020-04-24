@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {  TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Text} from 'react-native';
+import {  TextInput, StyleSheet, View, Dimensions, TouchableHighlight, Text, ActivityIndicator} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import HomeButton from '../../frontend/components/HomeButton';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -9,9 +9,14 @@ export default function LogIn(props) {
     const [usernm,setUserNM] = React.useState(null);
     const [password, setPassword] = React.useState(null);
     const [error, setError] = React.useState(null);
+    const [loading, setLoading] = React.useState(false);
+    const [success, setSuccess] = React.useState('');
+    var source;
+    const CancelToken = axios.CancelToken;
+    source = CancelToken.source();
 
-    const submitInfo = async() => {
-      /*let success = false;
+    const submitInfo = () => {
+      setLoading(true);
       const user={
         username:usernm,
         password:password,
@@ -19,27 +24,25 @@ export default function LogIn(props) {
       //console.log(user);
       if(!usernm || !password){
         setError('Missing a field. Please enter all fields before continuing.');
+        setLoading(false);
         return;
       }
-     await axios.post('http://lahacks-hobbyist.tech:3000/auth',user)
+      axios.post('http://104.154.57.17:3000/auth',user, {cancelToken:source.token})
       .then((response)=>{
           props.route.params.setTOKEN(response.data.token);
-          if(response.status == 200){
-            success=true;
-          }
-       
+          props.setUser(usernm);
+          props.navigation.navigate('Home');
+          setSuccess(response.status);
         })
-      .catch(()=>{
+      .catch((error)=>{
+        console.log(error);
         setError('Network error. Please try again.');
       })
-
-      if(!success){
-        setError("Credentials incorrect. Please try again.")
-        return;
+      if(success !=='200'){
+        setError('Incorrect credentials. Please retry.');
       }
-        props.setUser(usernm);*/
-        props.navigation.navigate('Home');
-        props.route.params.setTOKEN('gdfgg');
+      setError('');
+      setLoading(false);
     }
 
     return (
@@ -71,6 +74,7 @@ export default function LogIn(props) {
             onChangeText={(text) => setPassword(text)}
             style={styles.textInput}/>
             <View style={{height:40,}}/>
+            {loading && <ActivityIndicator size="large" style={{marginBottom:20}} color='#FDB372'/>}
             <LinearGradient
             colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
             start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
@@ -96,7 +100,7 @@ var widthVal = Dimensions.get('window').width;
 const styles = StyleSheet.create({
     errorText:{
       elevation:1,
-      marginLeft:10,
+      marginLeft:40,
       marginTop:-20,
       padding:20,
       fontSize:20,
@@ -139,7 +143,7 @@ const styles = StyleSheet.create({
         margin:20,
         padding:10,
         backgroundColor:`#F4F4F4`,
-        color:`#FF7D00`,
+        color:`#000`,
         fontSize:25,
         width:300,
         height:75,

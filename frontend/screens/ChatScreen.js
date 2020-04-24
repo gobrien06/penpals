@@ -1,39 +1,48 @@
 import * as React from 'react';
-import {View,ScrollView,Text,StyleSheet, TouchableHighlight, Dimensions} from 'react-native';
+import {View,ScrollView,Text,StyleSheet, TouchableHighlight, Dimensions, ActivityIndicator} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import axios from 'axios';
 import HomeButton from '../components/HomeButton';
 
 export default function ChatScreen(props){
     const [unJoined, setUnJoined] = React.useState([{members:'unoiined',channelId:'4325436',}]);
-    const [joined, setJoined] = React.useState([{members:'testing',channelId:'4325436',},{members:'testing2',channelId:'4325436',},{members:'testin2',channelId:'4325436',},{members:'testing2',channelId:'4325436',}]);
+    const [joined, setJoined] = React.useState([{members:'testing',channelId:'4325436',},]);
+    const [loading, setLoading] = React.useState(false);
+    const [canceled, setCanceled] = React.useState('n');
+    var source;
+    const CancelToken = axios.CancelToken;
+    source = CancelToken.source();
+    //notify users of new chat channels? - planned future functionality
 
-    //notify users of new chat channels
-    
     const getChannels=()=>{
-        /*
+        setLoading(true);
         const config = {
             headers: {
               'Authorization': 'BEARER ' + props.route.params.TOKEN,
             }
           }
     
-        axios.get('http://lahacks-hobbyist.tech:3000/chat/channels/',config)
+        axios.get('http://104.57.17:3000/chat/channels/',config, {cancelToken:source.token})
         .then((response)=>{
-            if(response.data.channels==[] && response.data.pending_channels==[])
+            if(response.data.channels==[] && response.data.pending_channels==[]){
+                setLoading(false);
                 return;
-            
+            }
+            console.log("RESPONSE" + response.data);
             setUnJoined(response.data.pending_channels);
             setJoined(response.data.channels);
         })
         .catch((error)=>{
-            console.log(error);
+            console.log("chat error" + error);
         })
-
-        return;*/
+        .finally(()=>{
+            setLoading(false);
+        })
+        return;
     }
 
     const handleJoinRemove=(i)=>{
+        setLoading(true);
         const channelId = {
             channelId:joined[i].channelId,
         }
@@ -43,7 +52,7 @@ export default function ChatScreen(props){
             }
           }
           
-        axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/leave',channelId,config)
+        axios.post('http://104.57.17:3000/chat/channels/leave',channelId,config,{cancelToken:source.token})
         .then(()=>{
             setJoined(joined => {
                 return joined.splice(i,1);
@@ -52,11 +61,12 @@ export default function ChatScreen(props){
         .catch((error)=>{
                 console.log(error);
         })
-
+        setLoading(false);
     }
 
 
     const handleUnJoinRemove=(i)=>{
+        setLoading(true);
         const id = {
             id:unJoined[i].channelId,
         }
@@ -66,7 +76,7 @@ export default function ChatScreen(props){
             }
           }
 
-        axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/leave',id,config)
+        axios.post('http://104.154.17:3000/chat/channels/leave',id,config)
         .then(()=>{
             setUnJoined(unJoined => {
                 return unJoined.splice(i,1);
@@ -80,15 +90,18 @@ export default function ChatScreen(props){
       .catch((error)=>{
             console.log(error);
       })
-
+      setLoading(false);
     }
 
     const reply=(i)=>{
-        props.navigation.navigate('Channel');
-       //props.navigation.navigate('Channel', {channelId:joined[i].channelId});
+        setLoading(true);
+        setLoading(false);
+        props.navigation.navigate('Channel', {channelId:joined[i].channelId});
+        source.cancel('Left page, request cancelled.');
     }
 
     const joinChannel = (i) =>{
+        setLoading(true);
         const accepted={
           channelId:unJoined[i].channelId,
         }
@@ -99,7 +112,7 @@ export default function ChatScreen(props){
         }
   
         console.log(accepted);
-        axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/join',accepted,config)
+        axios.post('http://104.154.17:3000/chat/channels/join',accepted,config,{cancelToken:source.token})
         .then((response)=>{
           console.log(response);
           getChannels();
@@ -113,6 +126,7 @@ export default function ChatScreen(props){
           console.log(error);
         }
         )
+        setLoading(false);
       }
 
     const getChats=()=>{
@@ -164,7 +178,7 @@ export default function ChatScreen(props){
                 })
             )
         } 
-        console.log("chats" + chats);
+        console.log("chats " + chats);
         return chats;
     }
         
@@ -181,13 +195,13 @@ export default function ChatScreen(props){
                 <Text style={styles.topText}>
                 Conversations.
                 </Text>
-                <HomeButton navigation={props.navigation} align="right"/>
-          
-           
+                <HomeButton navigation={props.navigation} align="right"/>   
             </View>
             <ScrollView style={styles.displayChats}>
                 {getChats()}
             </ScrollView>
+            {loading && <ActivityIndicator size="large"  style={{marginBottom:15}} color='#FDB372'/>}
+
         </View>
     )
 }

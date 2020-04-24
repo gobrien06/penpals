@@ -39,7 +39,7 @@ export default function App(props) {
   const { getInitialState } = useLinking(containerRef);
   const [TOKEN, setTOKEN] = React.useState(null);
   const [username, setUser] = React.useState('');
-
+  
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
@@ -80,7 +80,7 @@ export default function App(props) {
             <Stack.Screen name="Login">
             {props => <LoginScreen {...props} setUser={setUser}/>}
             </Stack.Screen>
-            <Stack.Screen name="Signup" component={SignupScreen}/>
+            <Stack.Screen name="Signup" component={SignupScreen} setUser={setUser}/>
             <Stack.Screen name="Language">
             {props => <LanguageScreen {...props} setUser={setUser}/>}
             </Stack.Screen>

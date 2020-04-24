@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { TextInput, StyleSheet, View, TouchableHighlight, Text, ScrollView } from 'react-native';
-import HomeButton from '../components/HomeButton';
+import { TextInput, StyleSheet, View, TouchableHighlight, Text, ScrollView, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import {LinearGradient} from 'expo-linear-gradient';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import Geocoder from 'react-native-geocoding';
 
 export default function SignupScreen(props) {
   const [languages, setLanguages] = React.useState([]);
@@ -12,11 +10,15 @@ export default function SignupScreen(props) {
   const [error,setError] = React.useState('');
   const [editing, setEdit] = React.useState(false);
   const [coords, setCoords] = React.useState(['','']);
-  const [location, setLocation] = React.useState(['city','state']);
+  const [loading, setLoading] = React.useState(false);
+  var source;
+  const CancelToken = axios.CancelToken;
+  source = CancelToken.source();
 
   const textInput = React.createRef ();
   
   const submitInfo = () => {
+    setLoading(true);
     setLanguages(languages => {
       if(formValue=='')
         return languages;
@@ -26,22 +28,25 @@ export default function SignupScreen(props) {
     });
         //console.log("submitted");
         setFormValue('');
+        setLoading(false);
         textInput.current.clear();
   }
 
   const findLoc = () =>{
-    //Geocoder.init("xxxxxxxxxxxxxxxxxxxxxxxxx");
+    setLoading(true);
     navigator.geolocation.getCurrentPosition(
         (position) => {
             JSON.stringify(position);
             console.log(position.coords);
-            setCoords(position.coords.latitude,position.coords.longitude);
+            setCoords([position.coords.latitude,position.coords.longitude]);
         },
         (error) =>{
             console.log(error.message);
             Alert.alert(error.message);
         }
+        
     )
+    setLoading(false);
     /*
     Geocoder.from(coords[0],coords[1])
     .then((geocoded)=>{
@@ -52,67 +57,66 @@ export default function SignupScreen(props) {
     .catch((error)=>{
         console.log(error);
     })*/
-
   }
+
   const sendItems = () =>{
-    /*console.log("sending");
+    setLoading(true);
     const config={
       headers: {
-        'Authorization': 'BEARER ' + props.TOKEN,
+        'Authorization': 'BEARER ' + props.route.params.TOKEN,
       }
     }
     const user={
       language:languages,
-      location:location,
+      location:coords,
     }
     if(languages===[]){
       setError('You have no languages!');
+      setLoading(false);
       return;
     }
 
-    axios.post('http://lahacks-hobbyist.tech:3000/users/update',user,config)
+    axios.post('http://104.154.17:3000/users/update',user,config)
     .then((response)=>{
         console.log(response);
       })
     .catch(()=>{
       setError('Network error. Please try again.');
     })
-  
-
+    setLoading(false);
+    props.navigation.navigate('Home');
+    source.cancel('Left page, request canceled.');
   }
 
-  const getInitial= async()=>{
-    /*const config={
+  const getInitial= ()=>{
+    setLoading(true);
+
+    const config={
       headers: {
-        'Authorization': 'BEARER ' + props.TOKEN,
+        'Authorization': 'BEARER ' + props.route.params.TOKEN,
       }
     }
     
-     await axios.get('http://lahacks-hobbyist.tech:3000/users/language',config)
+      axios.get('http://104.157.57.17:3000/users/language',config, {cancelToken:source.token})
     .then((response)=>{
       if(response.data.language){
         setLanguages(response.data.language);
         setLocation(response.data.location);
       }
-     
     })
     .catch(()=>{
       setError('Network error. Could not fetch languages.');
     })
+    setLoading(false);
   }
   
-  React.useEffect(()=>
-    {
-      getInitial();
-    },[]
-  )*/
-  props.navigation.navigate('Home');
-  }
+
+  React.useEffect(getInitial);  
+  
 
   const generateItem = () =>{
         return (languages.map((item, index)=>{
             return (
-       
             <View style={styles.languageItem}>
             <Text style={styles.languageText}>{item}</Text>
             <TouchableHighlight onPress={() => handleRemove(index)}  style={styles.removeButton}><Text style={styles.closeText}>x</Text></TouchableHighlight>
@@ -122,9 +126,7 @@ export default function SignupScreen(props) {
         })
         )
        
-      }
-      //sendItems();
-  
+      }  
 
   const handleRemove=(i)=>{
     console.log("removing");
@@ -200,6 +202,7 @@ export default function SignupScreen(props) {
             </View>
             </View> )
             : (<View/>)}   
+            {loading && <ActivityIndicator size="large" style={{marginBottom:10}} color='#FDB372'/>}
             <View style={{height:30}}/>
             <LinearGradient
             colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}
@@ -214,7 +217,6 @@ export default function SignupScreen(props) {
             <Text style={styles.errorText}>
             {error} 
             </Text>
-                
             </KeyboardAwareScrollView>
         </View>
       );
@@ -338,7 +340,7 @@ const styles = StyleSheet.create({
           padding:10,
           borderColor:'#000',
           backgroundColor:`#FFF`,
-          color:`#FF3D00`,
+          color:`#FF7D00`,
           fontSize:25,
           width:300,
           height:70,
