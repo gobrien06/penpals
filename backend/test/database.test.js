@@ -40,18 +40,8 @@ describe('est', () => {
             .get('/chat/channels')
             .set('Authorization', 'BEARER ' + auth)
             .then(res => {
+                console.log(res.body);
                 channelId = res.body['pending_channels'][0]['channelId'];
-                done();
-            });
-    });
-    
-    test('Join Channel', done => {
-        request(app)
-            .post('/chat/channels/join')
-            .set('Authorization', 'BEARER ' + auth)
-            .send({channelId: channelId})
-            .expect(201)
-            .then(res => {
                 done();
             });
     });

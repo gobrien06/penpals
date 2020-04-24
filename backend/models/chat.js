@@ -89,7 +89,7 @@ function leaveChannel(req, res) {
     pg_client.query(q_removeChannel, req.body.channelId).then(result => {
         
         //remove channel from both users
-        let members = [...result['rows'][0]['members'], ...result['rows'][0]['pending_members'];
+        let members = [...result['rows'][0]['members'], ...result['rows'][0]['pending_members']];
         for(let i = 0; i < members.length; i++) {
             pg_client.query(q_removeChannelMembers, [req.body.channelId, result['rows'][0]['members'][i]]]).then(result => {
                 res.sendStatus(200);
