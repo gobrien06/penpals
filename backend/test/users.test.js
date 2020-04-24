@@ -15,5 +15,5 @@ test('Signup', done => {
         .expect(res => {
             console.log(res);
             done();
-        }
+        });
 });
