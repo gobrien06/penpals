@@ -23,10 +23,10 @@ const authenticateJWT = (req, res, next) => {
 };
 
 
-const query_authenticate = 'SELECT * FROM users WHERE username = $1';
+const q_authenticate = 'SELECT * FROM users WHERE username = $1';
 
 function authenticate(req, res) {
-    pg_client.query(query_authenticate, [req.body.username]).then(result => {
+    pg_client.query(q_authenticate, [req.body.username]).then(result => {
         bcrypt.compare(req.body.password, result['rows'][0]['pass'], (err, result) => {
             if(result == true) {
                 let accessToken = jwt.sign({user: req.body.username}, accessTokenSecret);

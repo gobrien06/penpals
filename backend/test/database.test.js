@@ -17,7 +17,6 @@ describe('Test User', () => {
             .send(formData)
             .expect(200)
             .then(res => {
-                console.log(res.statusCode);
                 done();
             });
             
@@ -32,7 +31,6 @@ describe('Delete User', () => {
             .send(formData)
             .expect(200)
             .then(res => {
-                console.log(res.statusCode);
                 done();
             });
         
