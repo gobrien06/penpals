@@ -28,15 +28,19 @@ function delete_user(req, res) {
         bcrypt.compare(req.body.password, result[0]['password'], (err, result) => {
             if(result == true) {
                 pg_client.query(query_delete, [req.body.username]).then(result => {
+                    console.log(result);
                     res.sendStatus(200);
                 }, result => {
+                    console.log(result);
                     res.sendStatus(401);
                 });
             } else {
+                console.log(result);
                 res.sendStatus(401);
             };
         });
     }, result => {
+        console.log(result);
         res.sendStatus(401);
     });
 }

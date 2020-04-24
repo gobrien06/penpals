@@ -7,7 +7,7 @@ router.post('/users', function(req, res) {
     users.insert(req, res);
 });
 
-router.post('users/delete', function(req, res) {
+router.post('/users/delete', function(req, res) {
     users.delete_user(req, res);
 });
 
