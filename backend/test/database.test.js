@@ -17,7 +17,7 @@ afterAll(() => {
         
 let auth;
 
-describe('est', () => {
+describe('APP', () => {
     test('Create User', done => {
         request(app)
             .post('/users')
@@ -33,6 +33,7 @@ describe('est', () => {
     test('Create Channel', done => {
         request(app)
             .get('/chat/test')
+            .expect(200)
             .end((err, res) => {
                 done();
             });
@@ -44,6 +45,7 @@ describe('est', () => {
         request(app)
             .get('/chat/channels')
             .set('Authorization', 'BEARER ' + auth)
+            .expect(200)
             .end((err, res) => {
                 channelId = res.body['pending_channels'][0]['channelId'];
                 done();
@@ -70,6 +72,7 @@ describe('est', () => {
                 channelId: channelId,
                 content: {message: 'LOLEE'}
             })
+            .expect(201)
             .end((err, res) => {
                 done();
             });
@@ -82,6 +85,7 @@ describe('est', () => {
             .send({
                 channelId: channelId
             })
+            .expect(201)
             .end((err, res) => {
                 console.log(res.body);
                 done();
@@ -94,6 +98,7 @@ describe('est', () => {
             .post('/chat/channels/leave')
             .set('Authorization', 'BEARER ' + auth)
             .send({channelId: channelId})
+            .expect(200)
             .end((err, res) => {
                 done();
             });
