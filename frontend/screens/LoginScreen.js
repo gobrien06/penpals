@@ -6,7 +6,7 @@ import {LinearGradient} from 'expo-linear-gradient';
 import axios from 'axios';
 
 export default function LogIn(props) {
-    const [usernm,setUserNM] = React.useState(null);
+    const [usernm,setUserNM] = React.useState('');
     const [password, setPassword] = React.useState(null);
     const [error, setError] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
@@ -21,7 +21,7 @@ export default function LogIn(props) {
         username:usernm,
         password:password,
       }
-      //console.log(user);
+      console.log(user);
       if(!usernm || !password){
         setError('Missing a field. Please enter all fields before continuing.');
         setLoading(false);

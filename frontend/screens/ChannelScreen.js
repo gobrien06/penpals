@@ -68,10 +68,11 @@ export default function ChannelScreen(props){
 
     const displayMessages = () =>{
         return (messages.map((items)=>{
-            {items==='' && null}
-            if(items.username === props.route.params.username){
+            {items.message==='' && null}
+            console.log('our username is ' + username);
+            if(items.username === username){
                 return (
-                <View style={styles.bubbleFrom}>
+                <View style={styles.bubbleTo}>
                 <Text style={styles.bubbleTxt}>{items.message}</Text>
                 <Text style={styles.bubbleDate}>{items.date}</Text>
                 </View>
@@ -79,7 +80,7 @@ export default function ChannelScreen(props){
             }
             else{
                 return(
-                <View style={styles.bubbleTo}>
+                <View style={styles.bubbleFrom}>
                 <Text style={styles.bubbleTxt}>{items.message}</Text>
                 <Text style={styles.bubbleDate}>{items.date}</Text>
                 </View>
@@ -114,7 +115,7 @@ export default function ChannelScreen(props){
     }
 
     React.useEffect(getMessages,[]);
-    useTimeout(()=>getMessages(),2000);
+    useTimeout(()=>getMessages(),900);
 
     return(
         <View style={styles.container}>

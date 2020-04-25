@@ -19,49 +19,51 @@ export default function SignupScreen(props) {
 
     const findLoc = () =>{
       setLoading(true);
-      navigator.geolocation.getCurrentPosition(
+      return new Promise((resolve,reject)=>{
+        resolve(navigator.geolocation.getCurrentPosition(
            (position) => {
               JSON.stringify(position)
-              .then((position)=>{
-                setCoords([parseFloat(position.coords.latitude),parseFloat(position.coords.longitude)]);
-              })
-              .catch((error)=>{
-                console.log(error);
-              })
-          },
-          (error) =>{
-              console.log(error.message);
-          }
-      )
-      setLoading(false);
+            setCoords([parseFloat(position.coords.latitude),parseFloat(position.coords.longitude)])
+            setLoading(false)
+           }
+        ));});
     }
+    
+      
   
     const submitInfo =  () => {
       setLoading(true);
-      findLoc();
-      const user={
-        username:usernm,
-        password:password,
-        name:[firstName,lastName],  
-        coords:coords,
-      }
-      if(!usernm || !password || !firstName || !lastName){
-        setError('Missing a field. Please enter all fields before continuing.');
-        setLoading(false);
-        return;
-      }
-      axios.post('http://104.154.57.17:3000/users',user, {timeout: 200})
-      .then((response)=>{
-          props.route.params.setTOKEN(response.data.token);
-          props.navigation.navigate('Language', {TOKEN:response.data.token});
+      findLoc().then(()=>{   
+        const user={
+          username:usernm,
+          password:password,
+          name:[firstName,lastName],  
+          coords:coords,
+        }
+        if(!usernm || !password || !firstName || !lastName){
+          setError('Missing a field. Please enter all fields before continuing.');
+          setLoading(false);
+          return;
+        }
+        axios.post('http://104.154.57.17:3000/users',user, {timeout: 200})
+        .then((response)=>{
+            props.route.params.setTOKEN(response.data.token);
+            props.navigation.navigate('Language', {TOKEN:response.data.token});
+          })
+        .catch((error)=>{
+          console.log(error);
+          setError("Network error. Try again.")
         })
+        .finally(()=>{
+          setLoading(false);
+        })
+
+      }
+      )
       .catch((error)=>{
         console.log(error);
-        setError("Network error. Try again.")
       })
-      .finally(()=>{
-        setLoading(false);
-      })
+   
     }
 
     return (

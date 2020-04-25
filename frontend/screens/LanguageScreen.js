@@ -38,13 +38,11 @@ export default function SignupScreen(props) {
     navigator.geolocation.getCurrentPosition(
         (position) => {
             JSON.stringify(position)
-            .then((position)=>{
+            console.log('updating');
               setCoords([parseFloat(position.coords.latitude),parseFloat(position.coords.longitude)]);
-            })
         },
         (error) =>{
             console.log(error.message);
-            Alert.alert(error.message);
         }
         
     )
