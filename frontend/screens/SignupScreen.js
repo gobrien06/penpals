@@ -23,7 +23,7 @@ export default function SignupScreen(props) {
           (position) => {
               JSON.stringify(position);
               console.log(position.coords);
-              setCoords([position.coords.latitude,position.coords.longitude]);
+              setCoords([parseFloat(position.coords.latitude),parseFloat(position.coords.longitude)]);
           },
           (error) =>{
               console.log(error.message);
@@ -77,7 +77,7 @@ export default function SignupScreen(props) {
             secureTextEntry={false}
             placeholder="Username"
             style={styles.textInput}
-            onChangeText={(text) => setUser(text)}/>
+            onChangeText={(text) => {setUser(text);props.setUser(text)}}/>
 
             <View style={{flexDirection: 'row',flexWrap: 'wrap', alignItems: 'flex-start',}}>          
             <TextInput

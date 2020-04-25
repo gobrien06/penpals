@@ -13,7 +13,7 @@ import SignupScreen from './screens/SignupScreen';
 import LanguageScreen from './screens/LanguageScreen';
 import ChatScreen from './screens/ChatScreen';
 import ChannelScreen from './screens/ChannelScreen';
-
+import PenScreen from './screens/PenScreen';
 
 import useLinking from './navigation/useLinking';
 
@@ -80,15 +80,16 @@ export default function App(props) {
             <Stack.Screen name="Login">
             {props => <LoginScreen {...props} setUser={setUser}/>}
             </Stack.Screen>
-            <Stack.Screen name="Signup" component={SignupScreen} setUser={setUser}/>
-            <Stack.Screen name="Language">
-            {props => <LanguageScreen {...props} setUser={setUser}/>}
+            <Stack.Screen name="Signup">
+            {props => <Signup {...props} setUser={setUser}/>}
             </Stack.Screen>
-            <Stack.Screen name="Chat">
-            {props => <ChatScreen {...props} setUser={setUser}/>}
-            </Stack.Screen>
+            <Stack.Screen name="Language" component={LanguageScreen}/>
+            <Stack.Screen name="Chat" component={ChatScreen}/>
             <Stack.Screen name="Channel">
-            {props => <ChannelScreen {...props} setUser={setUser} username={username}/>}
+            {props => <ChannelScreen {...props} username={username}/>}
+            </Stack.Screen>
+            <Stack.Screen name="Pen">
+            {props => <PenScreen {...props} username={username}/>}
             </Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>

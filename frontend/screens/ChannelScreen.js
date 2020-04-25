@@ -162,7 +162,7 @@ export default function ChannelScreen(props){
 
 const styles = StyleSheet.create({
     chatcontain:{
-        height:450,
+        height:510,
     
     },
     container:{
@@ -174,16 +174,15 @@ const styles = StyleSheet.create({
         height:50,
     },
     toptxt:{
-        width:250,
+        width:290,
         fontSize:40,  
-        marginRight:90,
+        marginRight:50,
         fontFamily:`manrope-bold`,
     },
     topbar:{
         padding:10,  
         paddingTop:20,
         flexDirection: 'row',
-
         flexWrap: 'wrap', 
         alignItems: 'flex-start', 
     },

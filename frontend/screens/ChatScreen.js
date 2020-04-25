@@ -7,8 +7,6 @@ export default function ChatScreen(props){
     const [unJoined, setUnJoined] = React.useState([]);
     const [joined, setJoined] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
-    const [canceled, setCanceled] = React.useState('n');   
-    const [isOpen, setOpen] = React.useState(false); 
     
     var source;
     const CancelToken = axios.CancelToken;
@@ -105,11 +103,18 @@ export default function ChatScreen(props){
    
     }
 
-    const reply=(i)=>{
+    const reply= (i) =>{
         setLoading(true);
-        setLoading(false);
         source.cancel('Left page, request cancelled.');
         props.navigation.navigate('Channel', {channelId:joined[i].channelId, TOKEN:props.route.params.TOKEN, user:joined[i].members});
+        setLoading(false);
+    }
+
+    const pen = (i)=>{
+        setLoading(true);
+        source.cancel('Left page, request cancelled.');
+        props.navigation.navigate('Pen', {channelId:joined[i].channelId, TOKEN:props.route.params.TOKEN, user:joined[i].members});
+        setLoading(false);
     }
 
     const joinChannel = (i) =>{
@@ -155,7 +160,7 @@ export default function ChatScreen(props){
                         <LinearGradient
                         colors={['#FF8800','#FF7400', '#FF7A00', '#FF5300', '#FF2100', '#FF3C00', ]}
                         start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
-                        style={{ height: 55, width: 125,  borderRadius:50, alignItems: 'center', justifyContent: 'center',   marginTop:15,}}
+                        style={{ height: 55, width: 125,  borderRadius:50, alignItems: 'center', justifyContent: 'center',   marginTop:15, marginRight:10,}}
                         >
                         <TouchableHighlight onPress={()=>joinChannel(index)} style={styles.reply}><Text style={styles.replyText}>Join</Text></TouchableHighlight>
                         </LinearGradient>
@@ -176,13 +181,22 @@ export default function ChatScreen(props){
                     <View style={styles.channel}>
                     <Text style={styles.channelLabel}>{item.members}</Text>
                     <TouchableHighlight onPress={() => handleJoinRemove(index)}  style={styles.removeButton}><Text style={styles.closeText}>x</Text></TouchableHighlight>
+                    <View style={styles.btnHold}>
+                    <LinearGradient
+                    colors={['#FF8800','#FF7400', '#FF7A00', '#FF5300', '#FF2100', '#FF3C00', ]}
+                    start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
+                    style={{ height: 55, width: 125,  borderRadius:50, alignItems: 'center', justifyContent: 'center',   marginTop:15, marginRight:10,}}
+                    >
+                    <TouchableHighlight onPress={()=>reply(index)} style={styles.reply}><Text style={styles.replyText}>Message</Text></TouchableHighlight>
+                    </LinearGradient>
                     <LinearGradient
                     colors={['#FF8800','#FF7400', '#FF7A00', '#FF5300', '#FF2100', '#FF3C00', ]}
                     start={{x: 0.0, y: 1.0}} end={{x: 1.0, y: 1.0}}
                     style={{ height: 55, width: 125,  borderRadius:50, alignItems: 'center', justifyContent: 'center',   marginTop:15,}}
                     >
-                    <TouchableHighlight onPress={()=>reply(index)} style={styles.reply}><Text style={styles.replyText}>Message</Text></TouchableHighlight>
-                    </LinearGradient>
+                    <TouchableHighlight onPress={()=>pen(index)} style={styles.reply}><Text style={styles.replyText}>Pen</Text></TouchableHighlight>
+                    </LinearGradient>         
+                    </View>
                     </View>
                  
                     </View>
@@ -258,6 +272,9 @@ const styles = StyleSheet.create({
         padding:10,
         paddingLeft:20,
         paddingRight:20,
+    },
+    btnHold:{
+        flexDirection: 'row',
     },
     channelLabel:{
         color:`#000`,
