@@ -9,8 +9,9 @@ export default function SignupScreen(props) {
   const [formValue,setFormValue] = React.useState('');
   const [error,setError] = React.useState('');
   const [editing, setEdit] = React.useState(false);
-  const [coords, setCoords] = React.useState(['','']);
+  const [coords, setCoords] = React.useState([0,0]);
   const [loading, setLoading] = React.useState(false);
+
   var source;
   const CancelToken = axios.CancelToken;
   source = CancelToken.source();
@@ -23,7 +24,7 @@ export default function SignupScreen(props) {
       if(formValue=='')
         return languages;
 
-        languages.push({language:formValue,});
+        languages.push(formValue);
         return languages;
     });
         //console.log("submitted");
@@ -38,7 +39,7 @@ export default function SignupScreen(props) {
         (position) => {
             JSON.stringify(position);
             console.log(position.coords);
-            setCoords([position.coords.latitude,position.coords.longitude]);
+            setCoords([parseFloat(position.coords.latitude),parseFloat(position.coords.longitude)]);
         },
         (error) =>{
             console.log(error.message);
@@ -59,7 +60,7 @@ export default function SignupScreen(props) {
     })*/
   }
 
-  const sendItems = () =>{
+  const sendLanguage = () =>{
     setLoading(true);
     const config={
       headers: {
@@ -67,16 +68,15 @@ export default function SignupScreen(props) {
       }
     }
     const user={
-      language:languages,
-      location:coords,
+      languages:languages,
     }
-    if(languages[0].language===[]){
+    if(languages[0]===null){
       setError('You have no languages!');
       setLoading(false);
       return;
     }
 
-    axios.post('http://104.154.17:3000/users/update',user,config)
+    axios.post('http://104.154.57.17:3000/users/languages',user,config,  {cancelToken:source.token}, {timeout: 20})
     .then((response)=>{
         console.log(response);
       })
@@ -84,11 +84,37 @@ export default function SignupScreen(props) {
       setError('Network error. Please try again.');
     })
     setLoading(false);
-    props.navigation.navigate('Home');
-    source.cancel('Left page, request canceled.');
   }
 
-  const getInitial= ()=>{
+  const sendCoords = () =>{
+    setLoading(true);
+    const config={
+      headers: {
+        'Authorization': 'BEARER ' + props.route.params.TOKEN,
+      }
+    }
+
+    const user={
+      coords:coords,
+    }
+
+    if(coords[0]===0){
+      setError('You have no coordinates!');
+      setLoading(false);
+      return;
+    }
+
+    axios.post('http://104.154.57.17:3000/users/coords',user,config,  {cancelToken:source.token}, {timeout: 20})
+    .then((response)=>{
+        console.log(response);
+      })
+    .catch(()=>{
+      setError('Network error. Please try again.');
+    })
+    setLoading(false);
+  }
+
+  const getLanguage = ()=>{
     setLoading(true);
 
     const config={
@@ -97,28 +123,25 @@ export default function SignupScreen(props) {
       }
     }
     
-      axios.get('http://104.157.57.17:3000/users/language',config, {cancelToken:source.token})
+    axios.get('http://104.154.57.17:3000/users/languages',config, {cancelToken:source.token}, {timeout: 20})
     .then((response)=>{
-      if(response.data.language){
-        setLanguages(response.data.language);
-        setLocation(response.data.location);
+      if(response.data.languages){
+        console.log(response.data.languages);
+        setLanguages(response.data.languages);
       }
     })
-    .catch(()=>{
-      setError('Network error. Could not fetch languages.');
+    .catch((error)=>{
+      console.log(error)
+      setError('Network error. Could not fetch settings data.');
     })
     setLoading(false);
   }
-  
-
-  React.useEffect(getInitial);  
-  
 
   const generateItem = () =>{
         return (languages.map((item, index)=>{
             return (
             <View style={styles.languageItem}>
-            <Text style={styles.languageText}>{item.language}</Text>
+            <Text style={styles.languageText}>{item}</Text>
             <TouchableHighlight onPress={() => handleRemove(index)}  style={styles.removeButton}><Text style={styles.closeText}>x</Text></TouchableHighlight>
             </View>
           
@@ -137,7 +160,49 @@ export default function SignupScreen(props) {
     });
   }
 
+  const getCoords=()=>{
+    setLoading(true);
+    const config ={
+        headers: {
+            'Authorization': 'BEARER ' + props.route.params.TOKEN,
+          }
+    }
+    axios.get('http://104.154.57.17:3000/users/coords',config, {cancelToken:source.token})
+    .then((response)=>{
+      if(response.data.coords){
+        console.log(response.data.coords);
+        setCoords(response.data.coords);
+      }
+    })
+    .catch((error)=>{
+      console.log(error)
+      setError('Network error. Could not fetch settings data.');
+    })
+    setLoading(false);
+  }
+
+  const getInitial=()=>{
+    setLoading(true);
+    console.log('getting initial');
+    getCoords();
+    getLanguage();
+    setLoading(false);
+  }
+
+  const sendItems=()=>{
+    setLoading(true);
+    sendCoords();
+    sendLanguage();
+    props.navigation.navigate('Home');
+    source.cancel('Left page, request canceled.');
+    setLoading(false);
+  }
+
+  React.useEffect(getInitial,[]);  
+
+
   var coordsStr = "("+Math.trunc(coords[0])+","+Math.trunc(coords[1])+")";
+
     return (
         <View style={styles.container}>
           <KeyboardAwareScrollView style={{}}   scrollEnabled={false} extraScrollHeight={130} enableOnAndroid={true} enableResetScrollToCoords={true}>
@@ -157,7 +222,7 @@ export default function SignupScreen(props) {
 
             <View style={styles.midHold}>
             <View style={{flexDirection: 'row',flexWrap: 'wrap', alignItems: 'flex-start',}}>
-            <Text style={styles.settingTxt}>Location:<Text style={{fontSize:20,}}>  {coords && coordsStr}  </Text> </Text>
+            <Text style={styles.settingTxt}>Location:<Text style={{fontSize:20,}}>  {coordsStr}  </Text> </Text>
             <TouchableHighlight style={styles.editBtn} onPress={()=>findLoc()}>
             <Text style={styles.smallbuttonText}>Find</Text>
             </TouchableHighlight>

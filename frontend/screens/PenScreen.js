@@ -55,7 +55,7 @@ export default function PenScreen(props){
 
     const goHome = () => {
         source.cancel('Leaving page. Canceling request');
-        props.navigation.navigate("Home");
+        props.navigation.navigate("Chat");
     }
     const txt = '>';
 
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     },
     textInput:{
         textAlignVertical:`top`,
-        elevation:5,
+        elevation:3,
         width:widthVal-30,
         height:450,
         margin:15,

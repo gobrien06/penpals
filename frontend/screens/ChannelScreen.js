@@ -31,10 +31,9 @@ export default function ChannelScreen(props){
 
     const goHome = () => {
         source.cancel('Leaving page. Canceling request');
-        props.navigation.navigate("Home");
+        props.navigation.navigate("Chat");
     }
     const txt = '>';
-
     
     const getMessages=()=>{
         setLoading(true);
