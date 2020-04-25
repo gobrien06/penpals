@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../app');
 const pg_client = require('../database/database');
+const matcher = require('../models/matcher');
 
 
 const formData = {
@@ -12,7 +13,12 @@ const formData = {
         }
 
 afterAll(() => {
-  pg_client.end();
+    pg_client.end();
+});
+
+test.only('Matching', done => {
+    matcher.matchRandomWithLanguageConstraint()
+    
 });
         
 let auth;

@@ -12,7 +12,7 @@ function insert(req, res) {
         pg_client.query(q_insert, [req.body.username, hash, req.body.first_name, req.body.last_name, req.body.languages, req.body.coords]).then(result => {
             res.status(200);
             chat.createChannel([req.body.username, 'Talkative Tyler'], false);
-            //matcher.matchRandomWithLanguageConstraint(req.body.username, req.body.languages);
+            matcher.matchRandomWithLanguageConstraint(req.body.username, req.body.languages);
             auth.authenticate(req, res);
         }, result => {
             console.log(result);
