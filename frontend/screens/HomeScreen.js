@@ -34,11 +34,19 @@ export default function HomeScreen(props) {
     setLoading(false);
   }
 
-
+/*
+ <View style={{height:40,width:40,backgroundColor:`#000`,borderRadius:50,justifyContent:`center`,alignContent:`center`, }}>
+      <TouchableHighlight style={{height:35,width:35, borderRadius:50,backgroundColor:`#FFF`, margin:2,}}>
+        <Text style={{ textAlign:`center`,fontFamily:`manrope-bold`, color:`#000`, fontSize:25,}}>i</Text>
+      </TouchableHighlight>
+      </View>
+*/
   return(
     <View style={styles.container}>
       <View style={styles.getStartedContainer}>
+
      
+
      <Image source={
        require('../assets/images/iu.png')
    

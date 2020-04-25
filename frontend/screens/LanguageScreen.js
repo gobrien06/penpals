@@ -23,7 +23,7 @@ export default function SignupScreen(props) {
       if(formValue=='')
         return languages;
 
-        languages.push(formValue);
+        languages.push({language:formValue,});
         return languages;
     });
         //console.log("submitted");
@@ -70,7 +70,7 @@ export default function SignupScreen(props) {
       language:languages,
       location:coords,
     }
-    if(languages===[]){
+    if(languages[0].language===[]){
       setError('You have no languages!');
       setLoading(false);
       return;
@@ -118,7 +118,7 @@ export default function SignupScreen(props) {
         return (languages.map((item, index)=>{
             return (
             <View style={styles.languageItem}>
-            <Text style={styles.languageText}>{item}</Text>
+            <Text style={styles.languageText}>{item.language}</Text>
             <TouchableHighlight onPress={() => handleRemove(index)}  style={styles.removeButton}><Text style={styles.closeText}>x</Text></TouchableHighlight>
             </View>
           

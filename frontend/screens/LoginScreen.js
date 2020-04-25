@@ -51,7 +51,7 @@ export default function LogIn(props) {
             <KeyboardAwareScrollView style={{flexGrow:1,}} enableAutomaticScroll={true} extraScrollHeight={100} enableOnAndroid={true}  >
             
             <Text style={styles.midText}>
-              Login.
+              Login. 
             </Text>
             <LinearGradient
             colors={['#FF2100', '#FF3C00', '#FF5300', '#FF7A00', '#FF7400', '#FF8800']}

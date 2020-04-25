@@ -1,39 +1,46 @@
 import * as React from 'react';
 import {StyleSheet, ScrollView, View, Text, TouchableHighlight, TextInput, ActivityIndicator} from 'react-native';
 import axios from 'axios';
-import HomeButton from '../components/HomeButton';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {LinearGradient} from 'expo-linear-gradient';
+import moment from 'moment';
+import useTimeout from 'use-timeout';
+
 
 export default function ChannelScreen(props){
-    const [messages,setMessages] = React.useState(['hey!']);
+    const [messages,setMessages] = React.useState([]);
     const [formValue,setFormValue] = React.useState('');
-    const [user, setUser] = React.useState('placeholder');
-    const [newMessages,setNewMessages] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
+    const currentDate = moment().format("MM/DD/YYYY HH:mm");
+    const username = props.username;
+
     var source;
     const CancelToken = axios.CancelToken;
     source = CancelToken.source();
     const textInput = React.createRef();
 
-    const submitInfo = () => {
-        setNewMessages(newMessages => {
-          if(formValue=='')
-            return newMessages;
-    
-            newMessages.push(formValue);
-            return newMessages;
-        });
-            setFormValue('');
-            textInput.current.clear();
+    const submitInfo =   () => {
+        if(formValue === '')
+            return;
+
+        sendMessage(formValue);
+        getMessages();
+        setFormValue('');
+        textInput.current.clear();
       }
+
+
+    const goHome = () => {
+        source.cancel('Leaving page. Canceling request');
+        props.navigation.navigate("Home");
+    }
+    const txt = '>';
 
     
     const getMessages=()=>{
         setLoading(true);
         const config = {
             headers: {
-              'Authorization': 'BEARER ' + props.TOKEN,
+              'Authorization': 'BEARER ' + props.route.params.TOKEN,
             }
           }
 
@@ -44,6 +51,7 @@ export default function ChannelScreen(props){
              
         axios.post('http://104.154.57.17:3000/chat/channels/messages',channelId,config, {cancelToken:source.token})
         .then((response)=>{
+            console.log(response.data);
             if(!(response.data[0])){
                 setLoading(false);
                 return;
@@ -56,45 +64,49 @@ export default function ChannelScreen(props){
             console.log(errors);
         })
         setLoading(false);
-        console.log("msgs"+messages);  
     }
 
+
     const displayMessages = () =>{
-        return (newMessages.map((items)=>{
-            if(user === props.user){
+        return (messages.map((items)=>{
+            {items==='' && null}
+            if(items.username === props.route.params.username){
                 return (
-                <View style={styles.bubbleTo}>
-                <Text style={styles.bubbleTxt}>{items}</Text>
-                <Text style={styles.bubbleDate}>somedatehere</Text>
+                <View style={styles.bubbleFrom}>
+                <Text style={styles.bubbleTxt}>{items.message}</Text>
+                <Text style={styles.bubbleDate}>{items.date}</Text>
                 </View>
                 )
             }
             else{
                 return(
                 <View style={styles.bubbleTo}>
-                <Text style={styles.bubbleTxt}>{items}</Text>
-                <Text style={styles.bubbleDate}>somedatehere</Text>
+                <Text style={styles.bubbleTxt}>{items.message}</Text>
+                <Text style={styles.bubbleDate}>{items.date}</Text>
                 </View>
                 ) 
             }   
         }))
     }
     
-    const sendMessage=(content)=>{ 
+    const sendMessage=(text)=>{ 
         setLoading(true);
         const config = {
             headers: {
-              'Authorization': 'BEARER ' + props.TOKEN,
+              'Authorization': 'BEARER ' + props.route.params.TOKEN,
             }
           }
 
         const message ={
-           content:content[0],
-           channelId: props.route.params.channelId,
+           content:{
+            message:text,
+            username:username,
+            date: currentDate,
+           },
+           channelId: props.route.params.channelId,  
         }
-        axios.post('http://lahacks-hobbyist.tech:3000/chat/channels/send', message,config, {cancelToken:source.token})
+        axios.post('http://104.154.57.17:3000/chat/channels/send', message,config, {cancelToken:source.token})
         .then((response)=>{
-            console.log(response.data);
         })
         .catch((error)=>{
             console.log(error);
@@ -103,16 +115,22 @@ export default function ChannelScreen(props){
     }
 
     React.useEffect(getMessages,[]);
+    useTimeout(()=>getMessages(),2000);
+
     return(
         <View style={styles.container}>
         <KeyboardAwareScrollView style={{}}   scrollEnabled={false} extraScrollHeight={130} enableOnAndroid={true} enableResetScrollToCoords={true}>
 
             <View style={styles.topbar}>
                 <Text style={styles.toptxt}>
-                    {user}
+                    {props.route.params.user}
                 </Text>
-                <HomeButton navigation={props.navigation} align='right'/>
-            </View>
+                <TouchableHighlight onPress={() => goHome()} style={styles.iconButton}>   
+                <Text style={{textAlign:`center`,fontSize:45,fontFamily:`manrope-bold`,color:`#FF7D00`}}>
+                    {txt}
+                </Text>        
+                </TouchableHighlight>
+                </View>
             <View style={styles.chatcontain}>
                 <ScrollView contentContainerStyle={styles.scroll}>
                     {displayMessages()}
@@ -142,14 +160,9 @@ export default function ChannelScreen(props){
     ) 
 }
 
-/*
-multiline = {true}
-                numberOfLines = {3}
-                */
-
 const styles = StyleSheet.create({
     chatcontain:{
-        height:500,
+        height:450,
     
     },
     container:{
@@ -170,7 +183,7 @@ const styles = StyleSheet.create({
         padding:10,  
         paddingTop:20,
         flexDirection: 'row',
-        height:90,
+
         flexWrap: 'wrap', 
         alignItems: 'flex-start', 
     },
@@ -210,7 +223,7 @@ const styles = StyleSheet.create({
     bubbleDate:{
         color:`#FFF`,
         bottom:0,
-        fontSize:20,
+        fontSize:15,
         fontFamily:`manrope-light`,
     },
     submitBtn:{
@@ -233,5 +246,14 @@ const styles = StyleSheet.create({
         width:230,
         margin:10,
         fontSize:20,
+    },
+    iconButton:{
+        height:50,
+        width:50,
+        right:0,
+        alignSelf:`flex-end`,
+        marginBottom:0,
+        alignContent:`center`,
+        justifyContent:`center`,
     },
 });

@@ -2,17 +2,24 @@ import * as React from 'react';
 import {View,ScrollView,Text,StyleSheet, TouchableHighlight, Dimensions, ActivityIndicator} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import axios from 'axios';
-import HomeButton from '../components/HomeButton';
 
 export default function ChatScreen(props){
-    const [unJoined, setUnJoined] = React.useState([{members:'unoiined',channelId:'4325436',}]);
-    const [joined, setJoined] = React.useState([{members:'testing',channelId:'4325436',},]);
+    const [unJoined, setUnJoined] = React.useState([]);
+    const [joined, setJoined] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
-    const [canceled, setCanceled] = React.useState('n');
+    const [canceled, setCanceled] = React.useState('n');   
+    const [isOpen, setOpen] = React.useState(false); 
+    
     var source;
     const CancelToken = axios.CancelToken;
     source = CancelToken.source();
     //notify users of new chat channels? - planned future functionality
+
+    const goHome = () => {
+        source.cancel('Leaving page. Canceling request');
+        props.navigation.navigate("Home");
+    }
+    const txt = '>';
 
     const getChannels=()=>{
         setLoading(true);
@@ -22,18 +29,19 @@ export default function ChatScreen(props){
             }
           }
     
-        axios.get('http://104.57.17:3000/chat/channels/',config, {cancelToken:source.token})
+        axios.get('http://104.154.57.17:3000/chat/channels/',config, {cancelToken:source.token},{timeout: 20})
         .then((response)=>{
             if(response.data.channels==[] && response.data.pending_channels==[]){
                 setLoading(false);
                 return;
             }
-            console.log("RESPONSE" + response.data);
+            console.log(response.data.pending_channels)
+            console.log(response.data.channel);
             setUnJoined(response.data.pending_channels);
             setJoined(response.data.channels);
         })
         .catch((error)=>{
-            console.log("chat error" + error);
+            console.log(error);
         })
         .finally(()=>{
             setLoading(false);
@@ -52,7 +60,7 @@ export default function ChatScreen(props){
             }
           }
           
-        axios.post('http://104.57.17:3000/chat/channels/leave',channelId,config,{cancelToken:source.token})
+        axios.post('http://104.154.57.17:3000/chat/channels/leave',channelId,config,{cancelToken:source.token})
         .then(()=>{
             setJoined(joined => {
                 return joined.splice(i,1);
@@ -61,14 +69,17 @@ export default function ChatScreen(props){
         .catch((error)=>{
                 console.log(error);
         })
-        setLoading(false);
+        .finally(()=>{
+            setLoading(false);
+            getChannels();
+        })
     }
 
 
     const handleUnJoinRemove=(i)=>{
         setLoading(true);
         const id = {
-            id:unJoined[i].channelId,
+            channelId:unJoined[i].channelId,
         }
         const config = {
             headers: {
@@ -76,28 +87,29 @@ export default function ChatScreen(props){
             }
           }
 
-        axios.post('http://104.154.17:3000/chat/channels/leave',id,config)
+        axios.post('http://104.154.57.17:3000/chat/channels/leave',id,config)
         .then(()=>{
             setUnJoined(unJoined => {
                 return unJoined.splice(i,1);
             });
-
+            console.log("in the then");
             })
-        .then(()=>{
-            getChannels();
-        })
-            
-      .catch((error)=>{
+        .catch((error)=>{
             console.log(error);
-      })
-      setLoading(false);
+        })
+        .finally(()=>{
+            setLoading(false);
+            getChannels();
+        })    
+   
+   
     }
 
     const reply=(i)=>{
         setLoading(true);
         setLoading(false);
-        props.navigation.navigate('Channel', {channelId:joined[i].channelId});
         source.cancel('Left page, request cancelled.');
+        props.navigation.navigate('Channel', {channelId:joined[i].channelId, TOKEN:props.route.params.TOKEN, user:joined[i].members});
     }
 
     const joinChannel = (i) =>{
@@ -111,8 +123,8 @@ export default function ChatScreen(props){
           }
         }
   
-        console.log(accepted);
-        axios.post('http://104.154.17:3000/chat/channels/join',accepted,config,{cancelToken:source.token})
+        console.log('accepted' + accepted);
+        axios.post('http://104.154.57.17:3000/chat/channels/join',accepted,config,{cancelToken:source.token})
         .then((response)=>{
           console.log(response);
           getChannels();
@@ -130,11 +142,11 @@ export default function ChatScreen(props){
       }
 
     const getChats=()=>{
-        let chats = []
+        let chatsIn = []
         {unJoined.length &&
             (
                 unJoined.map((item, index)=>
-                {  chats.push(
+                {  chatsIn.push(
                     <View style={{marginTop:10}}>
                
                         <View style={styles.channel}>
@@ -158,7 +170,7 @@ export default function ChatScreen(props){
         { joined.length &&
             (
                 joined.map((item, index)=>
-                {  chats.push(
+                {  chatsIn.push(
                     <View style={{marginTop:10}}>
                 
                     <View style={styles.channel}>
@@ -177,9 +189,8 @@ export default function ChatScreen(props){
                  )
                 })
             )
-        } 
-        console.log("chats " + chats);
-        return chats;
+        }  
+        return chatsIn;
     }
         
     
@@ -195,11 +206,16 @@ export default function ChatScreen(props){
                 <Text style={styles.topText}>
                 Conversations.
                 </Text>
-                <HomeButton navigation={props.navigation} align="right"/>   
+                <TouchableHighlight onPress={() => goHome()} style={styles.iconButton}>   
+                <Text style={{textAlign:`center`,fontSize:45,fontFamily:`manrope-bold`,color:`#FF7D00`}}>
+                    {txt}
+                </Text>        
+                </TouchableHighlight>
             </View>
             <ScrollView style={styles.displayChats}>
                 {getChats()}
             </ScrollView>
+          
             {loading && <ActivityIndicator size="large"  style={{marginBottom:15}} color='#FDB372'/>}
 
         </View>
@@ -277,5 +293,14 @@ const styles = StyleSheet.create({
         color:`#FF7D00`,
         fontSize:20,
 
+    },
+    iconButton:{
+        height:50,
+        width:50,
+        right:0,
+        alignSelf:`flex-end`,
+        marginBottom:0,
+        alignContent:`center`,
+        justifyContent:`center`,
     }
 });

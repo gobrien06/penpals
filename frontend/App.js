@@ -88,7 +88,7 @@ export default function App(props) {
             {props => <ChatScreen {...props} setUser={setUser}/>}
             </Stack.Screen>
             <Stack.Screen name="Channel">
-            {props => <ChannelScreen {...props} setUser={setUser}/>}
+            {props => <ChannelScreen {...props} setUser={setUser} username={username}/>}
             </Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
