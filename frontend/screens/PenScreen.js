@@ -18,7 +18,9 @@ export default function PenScreen(props){
     source = CancelToken.source();
     const textInput = React.createRef();
 
-    const submitInfo =   () => {
+    const submitInfo =   (e) => {
+        e.preventDefault();
+
         if(formValue === '')
             return;
 
@@ -78,7 +80,7 @@ export default function PenScreen(props){
      placeholderTextColor = "#151616"
      placeholder="Type Another"
      onChangeText={(text) => setFormValue(text)}
-     onSubmitEditing={submitInfo}
+     onSubmitEditing={(e)=>{submitInfo(e)}}
      autoCapitalize="words"
      autoCorrect={true}
      multiline

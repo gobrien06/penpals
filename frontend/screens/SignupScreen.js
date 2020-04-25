@@ -47,7 +47,7 @@ export default function SignupScreen(props) {
         setLoading(false);
         return;
       }
-      axios.post('http://104.154.57.17:3000/users',user, {timeout: 500})
+      axios.post('http://104.154.57.17:3000/users',user, {timeout: 60})
       .then((response)=>{
           props.route.params.setTOKEN(response.data.token);
           props.navigation.navigate('Language', {TOKEN:response.data.token});

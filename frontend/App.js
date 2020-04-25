@@ -81,7 +81,7 @@ export default function App(props) {
             {props => <LoginScreen {...props} setUser={setUser}/>}
             </Stack.Screen>
             <Stack.Screen name="Signup">
-            {props => <Signup {...props} setUser={setUser}/>}
+            {props => <SignupScreen {...props} setUser={setUser}/>}
             </Stack.Screen>
             <Stack.Screen name="Language" component={LanguageScreen}/>
             <Stack.Screen name="Chat" component={ChatScreen}/>
