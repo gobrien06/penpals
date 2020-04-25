@@ -5,22 +5,37 @@ const matcher = require('../models/matcher');
 
 
 const formData = {
-            username: 'test',
-            first_name: 'loled',
-            last_name: 'lolz',
+            username: 'Stephanie',
+            first_name: 'Stephanie',
+            last_name: 'Bethune',
             password: 'LOLE',
-            languages: ['en']        
+            languages: ['en'],
+            coords: [123.123, 234.234]
         }
 
 afterAll(() => {
     pg_client.end();
 });
 
+
 test.only('Matching', done => {
-    matcher.matchRandomWithLanguageConstraint()
-    
+    matcher.matchingService();
 });
-        
+
+/*
+test.only('Create User', done => {
+    request(app)
+        .post('/users')
+        .send(formData)
+        .expect(200)
+        .end((err, res) => {
+            auth = res.body['token'];
+            done();
+        });
+
+});
+*/
+
 let auth;
 
 describe('APP', () => {

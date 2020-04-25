@@ -27,20 +27,25 @@ const authenticateJWT = (req, res, next) => {
 const q_authenticate = 'SELECT * FROM users WHERE username = $1';
 
 function authenticate(req, res) {
+    console.log(req.body);
     pg_client.query(q_authenticate, [req.body.username]).then(result => {
-        bcrypt.compare(req.body.password, result['rows'][0]['pass'], (err, result) => {
-            if(result == true) {
-                let accessToken = jwt.sign({user: req.body.username}, accessTokenSecret);
-                res.status(200);
-                res.json({
-                    token: accessToken
-                });
-            } else {
-                
-                console.log('3');
-                res.sendStatus(401);
-            };
-        });
+        if(result['rows'].length != 0) {
+            bcrypt.compare(req.body.password, result['rows'][0]['pass'], (err, result) => {
+                if(result == true) {
+                    let accessToken = jwt.sign({user: req.body.username}, accessTokenSecret);
+                    res.status(200);
+                    res.json({
+                        token: accessToken
+                    });
+                } else {
+                    
+                    console.log('3');
+                    res.sendStatus(401);
+                };
+            });
+        } else {
+            res.sendStatus(401);
+        }
     }, result => {
         
         console.log('4');

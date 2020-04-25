@@ -1,0 +1,20 @@
+
+> backend@0.0.0 start /home/rothvann2000/penpals/backend
+> node ./bin/www
+
+
+> backend@0.0.0 start /home/rothvann2000/penpals/backend
+> node ./bin/www
+
+
+> backend@0.0.0 start /home/rothvann2000/penpals/backend
+> node ./bin/www
+
+[0mGET /chat/test [36m304 [0m11.279 ms - -[0m
+[0mGET /chat/test [36m304 [0m3.863 ms - -[0m
+[0mGET /chat/test [36m304 [0m4.025 ms - -[0m
+[0mGET /chat/test [36m304 [0m4.192 ms - -[0m
+[0mGET /chat/test [36m304 [0m3.980 ms - -[0m
+[0mGET /chat/test [36m304 [0m29.499 ms - -[0m
+[0mGET /chat/test [36m304 [0m4.509 ms - -[0m
+[0mGET /chat/test [36m304 [0m3.740 ms - -[0m

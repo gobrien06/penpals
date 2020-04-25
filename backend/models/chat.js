@@ -96,19 +96,21 @@ function leaveChannel(req, res) {
     pg_client.query(q_removeChannel, [req.body.channelId]).then(result => {
         
         //remove channel from both users
-        let members = [...result['rows'][0]['members'], ...result['rows'][0]['pending_members']];
-        let promises = [];
-        for(let i = 0; i < members.length; i++) {
-            promises.push(pg_client.query(q_removeChannelMembers, [req.body.channelId, result['rows'][0]['members'][i]]).then(result => {
-            
-            }, result => {
-                console.log(result);
-                res.sendStatus(400);
-            }));
-        }
-        Promise.all(promises).then(result => {
-            res.sendStatus(200);
-        });
+        if(result['rows'].length != 0) {
+          let members = [...result['rows'][0]['members'], ...result['rows'][0]['pending_members']];
+          let promises = [];
+          for(let i = 0; i < members.length; i++) {
+              promises.push(pg_client.query(q_removeChannelMembers, [req.body.channelId, result['rows'][0]['members'][i]]).then(result => {
+              
+              }, result => {
+                  console.log(result);
+                  res.sendStatus(400);
+              }));
+          }
+          Promise.all(promises).then(result => {
+              res.sendStatus(200);
+          });
+        };
     }, result => {
         res.sendStatus(400);
         console.log(result);
@@ -119,6 +121,7 @@ function leaveChannel(req, res) {
 const q_sendMessage = 'INSERT INTO messages (channelid, content) VALUES ($1, $2)';
 
 function sendMessage(req, res) {
+    req.body.content.username = req.user;
     pg_client.query(q_sendMessage, [req.body.channelId, req.body.content]).then(result => {
         res.sendStatus(201);
     }, result => {
