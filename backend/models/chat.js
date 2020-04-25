@@ -6,18 +6,22 @@ const q_addPendingUserChannels = 'UPDATE users SET pending_channels = array_appe
 function createChannel(members, res) {
     pg_client.query(q_createChannel, [[], members]).then(result => {
         let promises = [];
+        let channelid = result['rows'][0]['channelid'];
         for(let i = 0; i < members.length; ++i) {
             let user = members[i];
-            promises.push(pg_client.query(q_addPendingUserChannels, [result['rows'][0]['channelid'], user]).then(result => {
-            
+            promises.push(pg_client.query(q_addPendingUserChannels, [channelid, user]).then(result => {
             }, result => {
+                console.log('2');
                 console.log(result);
             }));
         }
         Promise.all(promises).then(result => {
-            res.sendStatus(200);
+            if(res) {
+              res.sendStatus(200);
+            }
         });
     }, result => {
+        console.log('1');
         console.log(result)
     });
 }
@@ -44,13 +48,11 @@ function getChannels(req, res) {
             }));
         }
         if(allChannels['rows'][0]['channels'].length != 0) {
-            promises.push(pg_client.query(q_getChannelMembers, allChannels['rows'][0]['channels'].join("','")).then(result => {
-                for(let i = 0; i < result.length; i++) {
-                    let members = [...result[i]['members'], ...result[i]['pending_members']];
+            promises.push(pg_client.query(q_getChannelMembers, [allChannels['rows'][0]['channels']]).then(result => {
+                for(let i = 0; i < result['rows'].length; i++) {
+                    let members = [...result['rows'][i]['members'], ...result['rows'][i]['pending_members']];
                     members = members.filter((e) => {return e != req.user});
-                    if(members.length != 0) {
-                        channels.push({channelId: result['rows'][i]['channelid'], members: members});
-                    }
+                    channels.push({channelId: result['rows'][i]['channelid'], members: members});
                 }
             }, result => {
                console.log(result); 
@@ -59,6 +61,7 @@ function getChannels(req, res) {
         }
         Promise.all(promises).then(result => {
             res.status(200);
+            console.log(channels);
             res.json({channels: channels, pending_channels: pending_channels});
         });
                 

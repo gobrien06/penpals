@@ -17,7 +17,7 @@ afterAll(() => {
         
 let auth;
 
-describe('est', () => {
+describe('App', () => {
     test('Create User', done => {
         request(app)
             .post('/users')

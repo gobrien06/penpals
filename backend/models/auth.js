@@ -11,6 +11,7 @@ const authenticateJWT = (req, res, next) => {
         const token = authHeader.split(' ')[1];
         jwt.verify(token, accessTokenSecret, (err, payload) => {
             if (err) {
+                console.log(token);
                 console.log(err);
                 return res.sendStatus(403);
             }
@@ -35,10 +36,15 @@ function authenticate(req, res) {
                     token: accessToken
                 });
             } else {
+                
+                console.log('3');
                 res.sendStatus(401);
             };
         });
     }, result => {
+        
+        console.log('4');
+        console.log(result);
         res.sendStatus(401);
     });
 }

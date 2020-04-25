@@ -12,6 +12,10 @@ router.post('/users/delete', function(req, res) {
     users.delete_user(req, res);
 });
 
+router.post('/users/location', function(req, res) {
+    users.updateCoords(req, res);    
+});
+
 router.post('/auth', function(req, res) {
     auth.authenticate(req, res);
 });
