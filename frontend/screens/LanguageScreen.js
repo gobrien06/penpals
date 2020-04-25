@@ -37,9 +37,10 @@ export default function SignupScreen(props) {
     setLoading(true);
     navigator.geolocation.getCurrentPosition(
         (position) => {
-            JSON.stringify(position);
-            console.log(position.coords);
-            setCoords([parseFloat(position.coords.latitude),parseFloat(position.coords.longitude)]);
+            JSON.stringify(position)
+            .then((position)=>{
+              setCoords([parseFloat(position.coords.latitude),parseFloat(position.coords.longitude)]);
+            })
         },
         (error) =>{
             console.log(error.message);
@@ -76,7 +77,7 @@ export default function SignupScreen(props) {
       return;
     }
 
-    axios.post('http://104.154.57.17:3000/users/languages',user,config,  {cancelToken:source.token}, {timeout: 20})
+    axios.post('http://104.154.57.17:3000/users/languages',user,config,  {cancelToken:source.token}, {timeout: 100})
     .then((response)=>{
         console.log(response);
       })
@@ -104,7 +105,7 @@ export default function SignupScreen(props) {
       return;
     }
 
-    axios.post('http://104.154.57.17:3000/users/coords',user,config,  {cancelToken:source.token}, {timeout: 20})
+    axios.post('http://104.154.57.17:3000/users/coords',user,config,  {cancelToken:source.token}, {timeout: 100})
     .then((response)=>{
         console.log(response);
       })
@@ -123,7 +124,7 @@ export default function SignupScreen(props) {
       }
     }
     
-    axios.get('http://104.154.57.17:3000/users/languages',config, {cancelToken:source.token}, {timeout: 20})
+    axios.get('http://104.154.57.17:3000/users/languages',config, {cancelToken:source.token}, {timeout: 100})
     .then((response)=>{
       if(response.data.languages){
         console.log(response.data.languages);

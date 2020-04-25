@@ -15,19 +15,22 @@ export default function SignupScreen(props) {
     const [firstName,setFirstName] = React.useState('');
     const [lastName,setLastName] = React.useState('');
     const [loading, setLoading] = React.useState(false);
-    const [coords, setCoords] = React.useState(['','']);
+    const [coords, setCoords] = React.useState([0,0]);
 
     const findLoc = () =>{
       setLoading(true);
       navigator.geolocation.getCurrentPosition(
-          (position) => {
-              JSON.stringify(position);
-              console.log(position.coords);
-              setCoords([parseFloat(position.coords.latitude),parseFloat(position.coords.longitude)]);
+           (position) => {
+              JSON.stringify(position)
+              .then((position)=>{
+                setCoords([parseFloat(position.coords.latitude),parseFloat(position.coords.longitude)]);
+              })
+              .catch((error)=>{
+                console.log(error);
+              })
           },
           (error) =>{
               console.log(error.message);
-              Alert.alert(error.message);
           }
       )
       setLoading(false);
@@ -47,7 +50,7 @@ export default function SignupScreen(props) {
         setLoading(false);
         return;
       }
-      axios.post('http://104.154.57.17:3000/users',user, {timeout: 60})
+      axios.post('http://104.154.57.17:3000/users',user, {timeout: 200})
       .then((response)=>{
           props.route.params.setTOKEN(response.data.token);
           props.navigation.navigate('Language', {TOKEN:response.data.token});
@@ -56,8 +59,9 @@ export default function SignupScreen(props) {
         console.log(error);
         setError("Network error. Try again.")
       })
-      setLoading(false);
-    
+      .finally(()=>{
+        setLoading(false);
+      })
     }
 
     return (
